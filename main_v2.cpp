@@ -3,22 +3,19 @@
 #include <vector>
 #include <iomanip>
 #include <random>
+#include <algorithm>
 
 using std::string;
 using std::cout;
 using std::cin;
 using std::endl;
 using std::setw;
+using std::vector;
 
 struct mokinys {
-	mokinys *next = nullptr; //rodyklė į sekantį linked listo mazgą
 	string vardas = "";
 	string pavarde = "";
-	//Šitoj versijoj pažymių masyvas, kaip dalis "mokinys" struktūros yra nebūtina,
-	//Tačiau tą supratau jau parašęs programą, tad palieku viską taip, kaip yra.
-	int *pazym = nullptr; //būsimas dinaminis namų darbų masyvas
-	int n = 0; //namų darbų pažymių skaičius
-	int masDydis = 0;
+	vector<int> pazym;
 	int egz = 0; //egzamino pažymys
 	double vidurkis = 0; //namų darbų pažymių vidurkis
 	double mediana = 0; //namų darbų pažymių mediana
@@ -30,7 +27,7 @@ struct mokinys {
 			cout << std::setprecision(2) << std::fixed << setw(16) << (0.4 * vidurkis) + (0.6 * egz) << endl;
 			break;
 		case 2:
-			cout << std::setprecision(2) << std::fixed << (mediana * 0.4) + (egz * 0.6) << endl;
+			cout << std::setprecision(2) << std::fixed << (0.4 * mediana) + (0.6 * egz) << endl;
 			break;
 		default:
 			cout << "Sveikinu, jums pavyko sugadinti programa.";
@@ -38,89 +35,38 @@ struct mokinys {
 		}
 	}
 
-	void pridetiPazym(int naujasPaz) {
-		if (n != 0) {
-			//Nepirmas pažymys
-			if (n + 1 <= masDydis) {
-				//masyvo dydžio keisti nereikia
-				pazym[n] = naujasPaz;
-				n++;
-			}
-			else {
-				//reikia keisti masyvo dydį
-				masDydis *= 2;
-				int *naujasMas = new int[masDydis];
-				for (int i = 0; i < n; i++) {
-					naujasMas[i] = pazym[i];
-				}
-				naujasMas[n] = naujasPaz;
-				delete[] pazym;
-				pazym = naujasMas;
-				n++;
-			}
-		}
-		else {
-			//Pirmas pažymys
-			pazym = new int[1] { naujasPaz };
-			n++;
-			masDydis++;
-		}
-	}
-
 	void skaiciuotiVidurki() {
+		int sk = pazym.size();
 		//Jei yra bent vienas pažymys
-		if (n > 0) {
+		if (sk > 0) {
 			int suma = 0;
-			for (int i = 0; i < n; i++) {
+			for (int i = 0; i < sk; i++) {
 				suma += pazym[i];
 			}
-			vidurkis = 1.0 * suma / n;
+			vidurkis = 1.0 * suma / sk;
 		}
 	}
 
 	void skaiciuotiMediana() {
+		int sk = pazym.size();
 		//Jei yra bent vienas pažymys
-		if (n > 0) {
+		if (sk > 0) {
 			//Prieš skaičiavimą išrikiuojame masyvo elementus didėjimo tvarka.
-			int pap;
-			for (int i = 0; i < n - 1; i++) {
-				for (int j = 0; j < n - i - 1; j++) {
-					if (pazym[j] > pazym[j + 1]) {
-						pap = pazym[j];
-						pazym[j] = pazym[j + 1];
-						pazym[j + 1] = pap;
-					}
-				}
-			}
+			std::sort(pazym.begin(), pazym.end());
 			//Nustatome mediana
-			if (n % 2 == 1) {
+			if (sk % 2 == 1) {
 				//Nelyginis skaičius pažymiu
-				mediana = pazym[(n - 1) / 2];
+				mediana = pazym[(sk - 1) / 2];
 			}
 			else {
 				//Lyginis skaičius pažymiu
-				mediana = 1.0 * (pazym[n / 2 - 1] + pazym[n / 2]) / 2;
+				mediana = 1.0 * (pazym[sk / 2 - 1] + pazym[sk / 2]) / 2;
 			}
 		}
 	}
 };
 
-void pridetiMokini(mokinys *&pirm, mokinys *&pask, mokinys naujas) {
-	if (pirm) {
-		//Nepirmas mokinys sąraše
-		pask->next = new mokinys;
-		pask = pask->next;
-		*pask = naujas;
-	}
-	else {
-		//Pirmas mokinys sąraše
-		pirm = new mokinys;
-		*pirm = naujas;
-		pask = pirm;
-	}
-}
-
-void spausdintiMokinius(mokinys *pirm, int kriterijus, int maxVardIlgis, int maxPavardIlgis) {
+void spausdintiMokinius(vector<mokinys> &mokiniai, int kriterijus, int maxVardIlgis, int maxPavardIlgis) {
 	cout << std::left << setw(maxVardIlgis + 2) << "Vardas" << setw(maxPavardIlgis + 2) << "Pavarde";
 	switch (kriterijus) {
 	case 1:
@@ -135,21 +81,19 @@ void spausdintiMokinius(mokinys *pirm, int kriterijus, int maxVardIlgis, int max
 	}
 	string linija(maxVardIlgis + maxPavardIlgis + 4, '-');
 	cout << linija << "----------------\n";
-	mokinys *t = pirm;
-	while (t) {
-		t->spausdintiInfo(kriterijus, maxVardIlgis, maxPavardIlgis);
-		t = t->next;
+	for (int i = 0; i < mokiniai.size(); i++) {
+		mokiniai[i].spausdintiInfo(kriterijus, maxVardIlgis, maxPavardIlgis);
 	}
 }
 
 void generuotiPazymius(mokinys &esamas, int pazSk) {
 	//Kodo gabaliukas paimtas iš interneto
-	static std::random_device rd; //atsitiktinis įrenginys
-	static std::mt19937 mt(rd()); //atsitiktinių skaičių generavimo variklis
-	static std::uniform_int_distribution<int> dist(1, 10); //intervalas, kuriame generuojame skaičius
+	std::random_device rd; //atsitiktinis įrenginys
+	std::mt19937 mt(rd()); //atsitiktinių skaičių generavimo variklis
+	std::uniform_int_distribution<int> dist(1, 10); //intervalas, kuriame generuojame skaičius
 
 	for (int i = 0; i < pazSk; i++) {
-		esamas.pridetiPazym(dist(mt));
+		esamas.pazym.push_back(dist(mt));
 	}
 	esamas.egz = dist(mt);
 
@@ -174,12 +118,13 @@ int int_ivestis() {
 	std::cin.clear(); //clear bad input flag
 	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); //discard input
 	return kint;
+	return kint;
 }
 
 //Pagrindinė įvesties funkcija
 //rėžimas == 1 - pažymiu įvestis ranka
 //rėžimas == 2 - pažymiu generavimas
-void ivestiMokinius(mokinys *&pirm, mokinys *&pask, int rezimas, int &maxVardIlgis, int &maxPavardIlgis) {
+void ivestiMokinius(vector<mokinys> &mokiniai, int rezimas, int &maxVardIlgis, int &maxPavardIlgis) {
 	mokinys esamas;
 	int genPazSk = 0;
 	cout << "---------------------------------------------------------\n";
@@ -208,10 +153,8 @@ void ivestiMokinius(mokinys *&pirm, mokinys *&pask, int rezimas, int &maxVardIlg
 		cout << mokSk + 1 << " mokinio vardas: "; cin >> esamas.vardas;
 		if (esamas.vardas != "-") {
 			if (esamas.vardas.size() > maxVardIlgis) maxVardIlgis = esamas.vardas.size();
-			esamas.n = 0;
-			esamas.masDydis = 0;
-			esamas.pazym = nullptr;
 			esamas.egz = 0;
+			esamas.pazym.clear();
 			esamas.vidurkis = 0;
 			esamas.mediana = 0;
 			pazymSk = 0;
@@ -225,7 +168,7 @@ void ivestiMokinius(mokinys *&pirm, mokinys *&pask, int rezimas, int &maxVardIlg
 						cout << pazymSk + 1 << ". ";
 						pazymys = int_ivestis();
 						if (pazymys != 0 && pazymys >= 1 && pazymys <= 10) {
-							esamas.pridetiPazym(pazymys);
+							esamas.pazym.push_back(pazymys);
 							pazymSk++;
 						}
 						else if (pazymys != 0) {
@@ -248,30 +191,15 @@ void ivestiMokinius(mokinys *&pirm, mokinys *&pask, int rezimas, int &maxVardIlg
 				}
 				esamas.skaiciuotiVidurki();
 				esamas.skaiciuotiMediana();
-				pridetiMokini(pirm, pask, esamas);
+				mokiniai.push_back(esamas);
 				mokSk++;
 			}
 		}
 	} while (esamas.vardas != "-" && esamas.pavarde != "-");
 }
 
-//Funkcija išvalo linked listą ir kiekvieno mazgo pažymių masyvą
-void isvalytiAtminti(mokinys *&pirm) {
-	if (pirm) {
-		mokinys *esamas = pirm;
-		while (esamas) {
-			delete[] pirm->pazym;
-			pirm = esamas->next;
-			delete esamas;
-			esamas = pirm;
-		}
-	}
-}
-
 int main() {
-	//*pirm - linked listo pirmas narys
-	//*pask - linked listo paskutinis narys
-	mokinys *pirm = nullptr, *pask = nullptr;
+	vector<mokinys> mokiniai;
 	int maxVardIlgis = 6, maxPavardIlgis = 7; //"vardas" - 6 simboliai//"pavarde" - 7 simboliai
 
 	cout << "--Mokiniu rezultatu skaiciavimo programa--" << endl;
@@ -284,10 +212,10 @@ int main() {
 	}
 	switch (ivedKrit) {
 	case 1:
-		ivestiMokinius(pirm, pask, 1, maxVardIlgis, maxPavardIlgis);
+		ivestiMokinius(mokiniai, 1, maxVardIlgis, maxPavardIlgis);
 		break;
 	case 2:
-		ivestiMokinius(pirm, pask, 2, maxVardIlgis, maxPavardIlgis);
+		ivestiMokinius(mokiniai, 2, maxVardIlgis, maxPavardIlgis);
 		break;
 	default:
 		cout << "Sveikinu, jums pavyko sugadinti programa.";
@@ -300,6 +228,5 @@ int main() {
 		cout << "\nNetinkamas pasirinkimas. Galimi pasirinkimai:\n1. Vidurkis\n2. Mediana\nJusu pasirinkimas: ";
 		vertKrit = int_ivestis();
 	}
-	spausdintiMokinius(pirm, vertKrit, maxVardIlgis, maxPavardIlgis);
-	isvalytiAtminti(pirm);
+	spausdintiMokinius(mokiniai, vertKrit, maxVardIlgis, maxPavardIlgis);
 }
