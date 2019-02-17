@@ -4,6 +4,8 @@
 #include <iomanip>
 #include <random>
 #include <algorithm>
+#include <stdlib.h>
+#include <fstream>
 
 using std::string;
 using std::cout;
@@ -20,19 +22,10 @@ struct mokinys {
 	double vidurkis = 0; //namų darbų pažymių vidurkis
 	double mediana = 0; //namų darbų pažymių mediana
 
-	void spausdintiInfo(int kriterijus, int maxVardIlgis, int maxPavardIlgis) {
+	void spausdintiInfo(int maxVardIlgis, int maxPavardIlgis) {
 		cout << setw(maxVardIlgis + 2) << std::left << vardas << setw(maxPavardIlgis + 2) << pavarde;
-		switch (kriterijus) {
-		case 1:
-			cout << std::setprecision(2) << std::fixed << setw(16) << (0.4 * vidurkis) + (0.6 * egz) << endl;
-			break;
-		case 2:
-			cout << std::setprecision(2) << std::fixed << (0.4 * mediana) + (0.6 * egz) << endl;
-			break;
-		default:
-			cout << "Sveikinu, jums pavyko sugadinti programa.";
-			break;
-		}
+		cout << std::setprecision(2) << std::fixed << setw(18) << (0.4 * vidurkis) + (0.6 * egz)
+			<< std::setprecision(2) << std::fixed << setw(18) << (0.4 * mediana) + (0.6 * egz) << endl;
 	}
 
 	void skaiciuotiVidurki() {
@@ -66,23 +59,13 @@ struct mokinys {
 	}
 };
 
-void spausdintiMokinius(vector<mokinys> &mokiniai, int kriterijus, int maxVardIlgis, int maxPavardIlgis) {
+void spausdintiMokinius(vector<mokinys> &mokiniai, int maxVardIlgis, int maxPavardIlgis) {
 	cout << std::left << setw(maxVardIlgis + 2) << "Vardas" << setw(maxPavardIlgis + 2) << "Pavarde";
-	switch (kriterijus) {
-	case 1:
-		cout << "Galutinis (Vid.)\n";
-		break;
-	case 2:
-		cout << "Galutinis (Med.)\n";
-		break;
-	default:
-		cout << "Sveikinu, jums pavyko sugadinti programa.";
-		break;
-	}
+	cout << "Galutinis (Vid.)  Galutinis (Med.)\n";
 	string linija(maxVardIlgis + maxPavardIlgis + 4, '-');
-	cout << linija << "----------------\n";
+	cout << linija << "----------------------------------\n";
 	for (int i = 0; i < mokiniai.size(); i++) {
-		mokiniai[i].spausdintiInfo(kriterijus, maxVardIlgis, maxPavardIlgis);
+		mokiniai[i].spausdintiInfo(maxVardIlgis, maxPavardIlgis);
 	}
 }
 
@@ -96,7 +79,6 @@ void generuotiPazymius(mokinys &esamas, int pazSk) {
 		esamas.pazym.push_back(dist(mt));
 	}
 	esamas.egz = dist(mt);
-
 }
 
 //Apsaugota sveikojo skaičiaus įvedimo funkcija.
@@ -110,7 +92,7 @@ int int_ivestis() {
 		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); //discard input
 		std::cout << "\nIvesta bloga reiksme. Iveskite reiksme is naujo: ";
 	}
-	//šių dviejų eilučių reikia, kad išvengtume automatinės vardo įvesties. PVZ.:
+	//Sekančių dviejų eilučių reikia, kad išvengtume automatinės vardo įvesties. PVZ.:
 	//Pasirenku generuoti pažymius atsitiktinai.
 	//Kai reikia rinktis, kiek pažymių noriu generuoti, įvedu reikšmę: "1asdasd"
 	//Be šių sekančių kodo eilučių, programa nuskaitys "1" kaip pažymių skaičių, o likusi įvesties dalis "asdasd" bus automatiškai įvesta
@@ -118,14 +100,12 @@ int int_ivestis() {
 	std::cin.clear(); //clear bad input flag
 	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); //discard input
 	return kint;
-	return kint;
 }
 
 //Pagrindinė įvesties funkcija
 //rėžimas == 1 - pažymiu įvestis ranka
 //rėžimas == 2 - pažymiu generavimas
 void ivestiMokinius(vector<mokinys> &mokiniai, int rezimas, int &maxVardIlgis, int &maxPavardIlgis) {
-	mokinys esamas;
 	int genPazSk = 0;
 	cout << "---------------------------------------------------------\n";
 	switch (rezimas) {
@@ -146,17 +126,18 @@ void ivestiMokinius(vector<mokinys> &mokiniai, int rezimas, int &maxVardIlgis, i
 		cout << "Sveikinu, jums pavyko sugadinti programa.";
 		break;
 	}
+	mokinys esamas;
 	int mokSk = 0; //kintamasis, sekantis, kiek mokinių įvesta
 	int pazymSk; //kintamasis, sekantis, kiek vieno mokinio pažymiu įvesta esamu laiku
 	int pazymys; //pagalbinis kintamasis pažymio įvedimui
 	do {
+		esamas.vidurkis = 0;
+		esamas.mediana = 0;
+		esamas.egz = 0;
+		esamas.pazym.clear();
 		cout << mokSk + 1 << " mokinio vardas: "; cin >> esamas.vardas;
 		if (esamas.vardas != "-") {
 			if (esamas.vardas.size() > maxVardIlgis) maxVardIlgis = esamas.vardas.size();
-			esamas.egz = 0;
-			esamas.pazym.clear();
-			esamas.vidurkis = 0;
-			esamas.mediana = 0;
 			pazymSk = 0;
 			cout << mokSk + 1 << " mokinio pavarde: "; cin >> esamas.pavarde;
 			if (esamas.pavarde != "-") {
@@ -198,16 +179,74 @@ void ivestiMokinius(vector<mokinys> &mokiniai, int rezimas, int &maxVardIlgis, i
 	} while (esamas.vardas != "-" && esamas.pavarde != "-");
 }
 
+void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPavardIlgis) {
+	std::ifstream input("duomenys.txt");
+	if (input.fail()) {
+		cout << "Ivyko klaida. Nurodytas failas neegzistuoja!" << endl;
+		exit(EXIT_FAILURE);
+	}
+	else {
+		cout << "failas atsidare\n";
+	}
+	int mokSk, ndSk;
+	input >> mokSk >> ndSk;
+	if (input.fail() || mokSk <= 0 || ndSk < 0) {
+		cout << "Ivyko klaida. Mokiniu skaicius arba namu darbu skaicius ivestas neteisingai!" << endl;
+		exit(EXIT_FAILURE);
+	}
+	else {
+		cout << mokSk << " " << ndSk << endl;
+	}
+		mokinys esamas;
+	for (int i = 0; i < mokSk; i++) {
+		int pazymys;
+		input >> esamas.vardas >> esamas.pavarde;
+		cout << esamas.vardas << " " << esamas.pavarde << " ";
+		if (esamas.vardas.size() > maxVardIlgis) maxVardIlgis = esamas.vardas.size();
+		if (esamas.pavarde.size() > maxPavardIlgis) maxPavardIlgis = esamas.pavarde.size();
+		for (int j = 0; j < ndSk; j++) {
+			input >> pazymys; cout << pazymys << " ";
+			if ( pazymys <= 0 || pazymys > 10) {
+				cout << "Ivyko klaida. Mokiniu duomenys ivesti neteisingu formatu!" << endl;
+				exit(EXIT_FAILURE);
+			}
+			esamas.pazym.push_back(pazymys);
+		}
+		input >> esamas.egz; cout << esamas.egz << endl;
+		esamas.skaiciuotiMediana();
+		esamas.skaiciuotiVidurki();
+		mokiniai.push_back(esamas);
+	}
+	input.close();
+}
+
+bool rikVard(mokinys i, mokinys j) { return (i.vardas < j.vardas); }
+bool rikPavard(mokinys i, mokinys j) { return (i.pavarde < j.pavarde); }
+void rikiuotiMokinius(vector<mokinys> &mokiniai, int pasirinkimas) {
+	if (pasirinkimas == 1) {
+		//Rikiavimas pagal vardą
+		sort(mokiniai.begin(), mokiniai.end(), rikVard);
+	}
+	else if (pasirinkimas == 2) {
+		//Rikiavimas pagal pavardę
+		sort(mokiniai.begin(), mokiniai.end(), rikPavard);
+	}
+	else {
+		//Klaida
+		cout << "Ivyko nenumatyta klaida...";
+	}
+}
+
 int main() {
 	vector<mokinys> mokiniai;
 	int maxVardIlgis = 6, maxPavardIlgis = 7; //"vardas" - 6 simboliai//"pavarde" - 7 simboliai
 
-	cout << "--Mokiniu rezultatu skaiciavimo programa--" << endl;
+	cout << "\n--Mokiniu rezultatu skaiciavimo programa--" << endl;
 	int ivedKrit; //Įvedimo kriterijus//Galimos reikšmės: 1-2
-	cout << "Pasirinkite pazymiu ivesties rezima:\n1. Pazymiu ivedimas ranka\n2. Atsitiktinis pazymiu generavimas\n";
+	cout << "  Pasirinkite pazymiu ivesties rezima:\n1. Pazymiu ivedimas ranka\n2. Atsitiktinis pazymiu generavimas\n3. Duomenu skaitymas is failo\n";
 	ivedKrit = int_ivestis();
-	while (ivedKrit != 1 && ivedKrit != 2) {
-		cout << "Netinkamas pasirinkimas. Galimi pasirinkimai:\n1. Pazymiu ivedimas ranka\n2. Atsitiktinis pazymiu generavimas\n";
+	while (ivedKrit < 1 && ivedKrit > 3) {
+		cout << "Netinkamas pasirinkimas. Galimi pasirinkimai:\n1. Pazymiu ivedimas ranka\n2. Atsitiktinis pazymiu generavimas\n3. Duomenu skaitymas is failo\n";
 		ivedKrit = int_ivestis();
 	}
 	switch (ivedKrit) {
@@ -217,16 +256,20 @@ int main() {
 	case 2:
 		ivestiMokinius(mokiniai, 2, maxVardIlgis, maxPavardIlgis);
 		break;
+	case 3:
+		skaitytiMokinius(mokiniai, maxVardIlgis, maxPavardIlgis);
+		break;
 	default:
 		cout << "Sveikinu, jums pavyko sugadinti programa.";
 		break;
 	}
 
-	cout << "Pagal ka norite matyti mokininiu vertinimus?\n1. Vidurki\n2. Mediana\n";
-	int vertKrit = int_ivestis();
-	while (vertKrit != 1 && vertKrit != 2) {
+	cout << "Pagal ka norite rikiuoti mokinius?\n1. Varda\n2. Pavarde\n";
+	int pasirink = int_ivestis();
+	while (pasirink != 1 && pasirink != 2) {
 		cout << "\nNetinkamas pasirinkimas. Galimi pasirinkimai:\n1. Vidurkis\n2. Mediana\nJusu pasirinkimas: ";
-		vertKrit = int_ivestis();
+		pasirink = int_ivestis();
 	}
-	spausdintiMokinius(mokiniai, vertKrit, maxVardIlgis, maxPavardIlgis);
+	rikiuotiMokinius(mokiniai, pasirink);
+	spausdintiMokinius(mokiniai, maxVardIlgis, maxPavardIlgis);
 }
