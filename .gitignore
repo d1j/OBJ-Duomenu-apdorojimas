@@ -1,5 +1,7 @@
 *.o
 *.exe
+
 test.cpp
-rezultatai/*.*
-duomenys/*.*
+
+rezultatai/*
+duomenys/*
