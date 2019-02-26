@@ -1,12 +1,42 @@
 #include "mokinys.h"
 
+#include <iostream>
+#include <iomanip>
+#include <algorithm>
+#include <stdexcept>
+
 using std::cout;
 using std::endl;
 using std::setw;
 
+void mokinys::isvestiInfo(std::ofstream& out, int maxVardIlgis, int maxPavardIlgis, int vardPavKrit) {
+	if (vardPavKrit == 1) {
+		//Rikiavimas pagal vardą, pirmas rodomas vardas
+		out << setw(maxVardIlgis + 2) << std::left << vardas << setw(maxPavardIlgis + 2) << pavarde;
+	} else if (vardPavKrit == 2) {
+		//RIkiavimas pagal pavardę, pirma rodoma pavardė
+		out << setw(maxPavardIlgis + 2)  << std::left << pavarde << setw(maxVardIlgis + 2) << vardas;
+	} else {
+		//Nenumatyta klaida.
+		out << "Nenumatyta klaida.\n";
+	}
 
-void mokinys::spausdintiInfo(int maxVardIlgis, int maxPavardIlgis) {
-	cout << setw(maxVardIlgis + 2) << std::left << vardas << setw(maxPavardIlgis + 2) << pavarde;
+	out << std::setprecision(2) << std::fixed << setw(18) << (0.4 * vidurkis) + (0.6 * egz)
+	    << std::setprecision(2) << std::fixed << setw(18) << (0.4 * mediana) + (0.6 * egz) << endl;
+}
+
+void mokinys::spausdintiInfo(int maxVardIlgis, int maxPavardIlgis, int pasirink) {
+	if (pasirink == 1) {
+		//Rikiavimas pagal vardą, pirmas rodomas vardas
+		cout << setw(maxVardIlgis + 2) << std::left << vardas << setw(maxPavardIlgis + 2) << pavarde;
+	} else if (pasirink == 2) {
+		//RIkiavimas pagal pavardę, pirma rodoma pavardė
+		cout << setw(maxPavardIlgis + 2)  << std::left << pavarde << setw(maxVardIlgis + 2) << vardas;
+	} else {
+		//Nenumatyta klaida.
+		cout << "Nenumatyta klaida.\n";
+	}
+
 	cout << std::setprecision(2) << std::fixed << setw(18) << (0.4 * vidurkis) + (0.6 * egz)
 	     << std::setprecision(2) << std::fixed << setw(18) << (0.4 * mediana) + (0.6 * egz) << endl;
 }

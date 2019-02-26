@@ -3,10 +3,7 @@
 
 #include <vector>
 #include <string>
-#include <iostream>
-#include <iomanip>
-#include <algorithm>
-#include <stdexcept>
+#include <fstream>
 
 struct mokinys {
 	std::string vardas = "";
@@ -16,7 +13,9 @@ struct mokinys {
 	double vidurkis = 0; //namų darbų pažymių vidurkis
 	double mediana = 0; //namų darbų pažymių mediana
 
-	void spausdintiInfo(int maxVardIlgis, int maxPavardIlgis);
+	void isvestiInfo(std::ofstream& out,int maxVardIlgis, int maxPavardIlgis, int vardPavKrit);
+
+	void spausdintiInfo(int maxVardIlgis, int maxPavardIlgis, int pasirink);
 
 	void skaiciuotiVidurki();
 
