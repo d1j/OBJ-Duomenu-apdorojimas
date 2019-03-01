@@ -43,18 +43,18 @@ void mokinys::spausdintiInfo(int maxVardIlgis, int maxPavardIlgis, int pasirink)
 
 void mokinys::skaiciuotiVidurki() {
 	int sk = pazym.size();
-	if (sk == 0) throw std::logic_error("Nera namu darbu pazymiu, apskaiciuoti vidurkio negalima.");
-	int suma = 0;
+	if (sk == 0) throw std::logic_error("Nera namu darbu pazymiu, apskaiciuoti vidurkio negalima. Mokinys: " + vardas + " " + pavarde);
+	double suma = 0;
 	for (int i = 0; i < sk; i++) {
 		suma += pazym[i];
 	}
-	vidurkis = 1.0 * suma / sk;
+	vidurkis = 1.0 * suma / (double)sk;
 
 }
 
 void mokinys::skaiciuotiMediana() {
 	int sk = pazym.size();
-	if (sk == 0) throw std::logic_error("Nera namu darbu pazymiu, apskaiciuoti medianos negalima.");
+	if (sk == 0) throw std::logic_error("Nera namu darbu pazymiu, apskaiciuoti medianos negalima. Mokinys: " + vardas + " " + pavarde);
 	//Prieš skaičiavimą išrikiuojame masyvo elementus didėjimo tvarka.
 	std::sort(pazym.begin(), pazym.end());
 	//Nustatome mediana

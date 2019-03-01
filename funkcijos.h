@@ -9,4 +9,6 @@ int gen_reiksm(int intPrad, int intPab);
 
 bool ar_failas_egzistuoja(std::string pav);
 
+bool arDoubleLygus(double dFirstVal, double dSecondVal);
+
 #endif

@@ -5,28 +5,37 @@
 #include <fstream>
 #include <exception>
 #include <stdexcept>
+#include <chrono>
 
 #include "funkcijos.h"
 
 using std::cout;
 using std::cin;
 using std::endl;
+using namespace std::chrono;
 
-void generuoti(std::string pavad, int mokSk, int pazSk) {
+void generuoti(std::string pavad, int mokSk) {
 	try {
+		auto start = high_resolution_clock::now();
+		int pazSk = 0;
 		std::ofstream out("./duomenys/" + pavad);
 		if (out.fail()) throw std::runtime_error("Nepavyko sukurti/atidaryti failo. Patikrinkite, ar gerai ivedete pavadinima");
-		out << mokSk << " " << pazSk << endl;
 		for (int i = 0; i < mokSk; ++i ) {
+			pazSk = gen_reiksm(min_paz_sk, max_paz_sk);
 			out << "Vardas" << gen_reiksm(min_mok_sk, max_mok_sk)
 			    << " Pavarde" << gen_reiksm(min_mok_sk, max_mok_sk) << " ";
 			for (int j = 0; j < pazSk; ++j) {
 				out << gen_reiksm(1, 10) << " ";
 			}
-			out << gen_reiksm(1, 10) << endl;
+			out << gen_reiksm(1, 10);
+			if (i != mokSk - 1) {
+				out << endl;
+			}
 		}
-		cout << "Failas sekmingai sugeneruotas.\n";
 		out.close();
+		auto end = high_resolution_clock::now();
+    	duration<double> diff = end-start;  
+		cout << "\nFailas sugeneruotas per: "<< diff.count()<< "s.\n";
 	} catch (std::exception& e) {
 		cout << e.what() << endl;
 	}
@@ -42,44 +51,36 @@ void generuotiDuomenis() {
 		mokSk = int_ivestis();
 	}
 	if (mokSk != -1) {
-		cout << "Iveskite, kiek namu darbu pazymiu turi tureti kiekvienas mokinys: ";
-		int pazSk = int_ivestis();
-		while (pazSk != -1 && pazSk < min_paz_sk && pazSk > max_paz_sk) {
-			cout << "Ivesta netinkama reiksme. Galimos reiksmes: -1 arba 1-1000\n:";
-			mokSk = int_ivestis();
-		}
-		if (pazSk != -1) {
-			bool pavPower = true;
-			std::string pavad;
-			while (pavPower) {
-				cout << "Iveskite tinkama failo pavadinima (PVZ.: duomenys.txt arba input.in): ";
-				cin >> pavad;
-				if (pavad != "-1") {
-					if (ar_failas_egzistuoja("./duomenys/" + pavad)) {
-						//Failas jau egzistuoja
-						int perPasirink;
-						cout << "Failas nurodytu pavadinimu jau egzistuoja, ar norite perrasyti si faila?\n1.Taip\n2.Ne\n: ";
+		bool pavPower = true;
+		std::string pavad;
+		while (pavPower) {
+			cout << "Iveskite tinkama failo pavadinima (PVZ.: duomenys.txt arba input.in): ";
+			cin >> pavad;
+			if (pavad != "-1") {
+				if (ar_failas_egzistuoja("./duomenys/" + pavad)) {
+					//Failas jau egzistuoja
+					int perPasirink;
+					cout << "Failas nurodytu pavadinimu jau egzistuoja, ar norite perrasyti si faila?\n1.Taip\n2.Ne\n: ";
+					perPasirink = int_ivestis();
+					while (perPasirink != 1 && perPasirink != 2) {
+						cout << "Ivesta negalima reiksme. Iveskite reiksme per naujo: ";
 						perPasirink = int_ivestis();
-						while (perPasirink != 1 && perPasirink != 2) {
-							cout << "Ivesta negalima reiksme. Iveskite reiksme per naujo: ";
-							perPasirink = int_ivestis();
-						}
-						if (perPasirink == 1) {
-							cout << "Failas pavadinimu " << pavad << " bus perrasytas.\n";
-							pavPower = false;
-						} else {
-							cout << "Failas pavadinimu " << pavad << " nebus perrasytas.\n";
-						}
-					} else {
-						//Failas neegzistuoja, galima kurti nauja faila
+					}
+					if (perPasirink == 1) {
+						cout << "Failas pavadinimu " << pavad << " bus perrasytas.\n";
 						pavPower = false;
+					} else {
+						cout << "Failas pavadinimu " << pavad << " nebus perrasytas.\n";
 					}
 				} else {
+					//Failas neegzistuoja, galima kurti nauja faila
 					pavPower = false;
 				}
+			} else {
+				pavPower = false;
 			}
-			if (pavad != "-1")
-				generuoti(pavad, mokSk, pazSk);
 		}
+		if (pavad != "-1")
+			generuoti(pavad, mokSk);
 	}
 }

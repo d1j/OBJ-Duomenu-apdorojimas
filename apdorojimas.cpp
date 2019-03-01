@@ -9,6 +9,8 @@
 #include <fstream>
 #include <exception>
 #include <stdexcept>
+#include <chrono>
+#include <cmath>
 
 #include "mokinys.h"
 #include "funkcijos.h"
@@ -19,6 +21,7 @@ using std::cin;
 using std::endl;
 using std::setw;
 using std::vector;
+using namespace std::chrono;
 
 //Apsaugota sveikojo skaičiaus įvedimo funkcija.
 //Tokia įvestis užtkrina kad į "int" tipo kintamąjį nebus bandoma įrašyti nepalaikomo tipo duomenų
@@ -47,7 +50,7 @@ void generuotiPazymius(mokinys &esamas, int pazSk) {
 	esamas.egz = gen_reiksm(1, 10);
 }
 
-//Pagrindinė įvesties funkcija
+//Pagrindinė įvesties ranka funkcija
 //rėžimas == 1 - pažymiu įvestis ranka
 //rėžimas == 2 - pažymiu generavimas
 void ivestiMokinius(vector<mokinys> &mokiniai, int rezimas, int &maxVardIlgis, int &maxPavardIlgis) {
@@ -163,6 +166,7 @@ void isvestiMokinius(vector<mokinys> &mokiniai, int maxVardIlgis, int maxPavardI
 		rezKrit = int_ivestis();
 	}
 
+	auto start = high_resolution_clock::now();
 	std::ofstream kietOut("./rezultatai/" + pavad + "_kiet.txt"),
 	    vargOut("./rezultatai/" + pavad + "_varg.txt");
 	if (vardPavKrit == 1) {
@@ -173,8 +177,8 @@ void isvestiMokinius(vector<mokinys> &mokiniai, int maxVardIlgis, int maxPavardI
 		vargOut << std::left << setw(maxPavardIlgis + 2) << "Pavarde" << setw(maxVardIlgis + 2) << "Vardas";
 	} else {
 		//Nenumatyta klaida
-		kietOut << "Nenumatyta klaida.\n";
-		vargOut << "Nenumatyta klaida.\n";
+		cout << "Nenumatyta klaida.\n";
+		cout << "Nenumatyta klaida.\n";
 	}
 	kietOut << "Galutinis (Vid.)  Galutinis (Med.)\n";
 	vargOut << "Galutinis (Vid.)  Galutinis (Med.)\n";
@@ -184,8 +188,9 @@ void isvestiMokinius(vector<mokinys> &mokiniai, int maxVardIlgis, int maxPavardI
 	for (int i = 0; i < mokiniai.size(); ++i) {
 		mokinys esamas = mokiniai[i];
 		if (rezKrit == 1) {
+			double rez = (0.4 * esamas.vidurkis) + (0.6 * esamas.egz);
 			//Išvedimas pagal vidurkį
-			if ((esamas.vidurkis * 0.4 + esamas.egz * 0.6) >= 5) {
+			if (arDoubleLygus(rez,  5.0) || rez > 5.0) {
 				//mokinys patenka į kietųjų sąrašą
 				esamas.isvestiInfo(kietOut, maxVardIlgis, maxPavardIlgis, vardPavKrit);
 			} else {
@@ -194,7 +199,9 @@ void isvestiMokinius(vector<mokinys> &mokiniai, int maxVardIlgis, int maxPavardI
 			}
 		} else if (rezKrit == 2 ) {
 			//Išvedimas pagal medianą
-			if ((esamas.mediana * 0.4 + esamas.egz * 0.6) >= 5) {
+			double rez = (0.4 * esamas.mediana) + (0.6 * esamas.egz);
+			if (arDoubleLygus(rez, 5.0) || rez > 5.0)
+			{
 				//mokinys patenka į kietųjų sąrašą
 				esamas.isvestiInfo(kietOut, maxVardIlgis, maxPavardIlgis, vardPavKrit);
 			} else {
@@ -205,33 +212,45 @@ void isvestiMokinius(vector<mokinys> &mokiniai, int maxVardIlgis, int maxPavardI
 	}
 	kietOut.close();
 	vargOut.close();
-	cout<<"Rezultatai sekmingai isvesti\n";
+	auto end = high_resolution_clock::now();
+	duration<double> diff = end - start;
+	cout << "\nRezultatai isvesti per: \a" << diff.count() << "s.\n";
 }
 
+//Duomenų skaitymo iš failo funkcija
 void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPavardIlgis) {
 	string pavadinimas;
+	int eilute = 0;
 	cout << "Iveskite failo pavadinima (PVZ failas.txt): "; cin >> pavadinimas;
 	try {
+		auto start = high_resolution_clock::now();
 		if (!ar_failas_egzistuoja("./duomenys/" + pavadinimas)) throw std::runtime_error("Nurodytas failas neegzistuoja!");
 		std::ifstream input("./duomenys/" + pavadinimas);
 		if (input.fail()) throw std::runtime_error("Nurodytas failas neatsidare!");
-		int mokSk, ndSk;
-		input >> mokSk >> ndSk;
-		if (input.fail() || mokSk <= 0 || ndSk < 0) throw std::logic_error("Mokiniu skaicius arba namu darbu skaicius ivestas neteisingai!");
-		
-		for (int i = 0; i < mokSk; i++) {
+
+		while (!input.eof()) {
 			mokinys esamas;
-			int pazymys;
-			input >> esamas.vardas >> esamas.pavarde;
+			eilute++;
+			int pap;
+			input >> esamas.vardas
+			      >> esamas.pavarde;
 			if (esamas.vardas.size() > maxVardIlgis) maxVardIlgis = esamas.vardas.size();
 			if (esamas.pavarde.size() > maxPavardIlgis) maxPavardIlgis = esamas.pavarde.size();
-			for (int j = 0; j < ndSk; j++) {
-				input >> pazymys;
-				if ( pazymys <= 0 || pazymys > 10)
-					throw std::logic_error("Mokiniu duomenys ivesti neteisingu formatu!");
-				esamas.pazym.push_back(pazymys);
+			while (input.peek() != '\n' && !input.eof()) {
+				input >> pap;
+				if (input.fail()) {
+					throw std::runtime_error("Nepavyko nuskaityti duomenu, patikrinkite, ar gerai ivedete duomenis. Klaida " + std::to_string(eilute) + "-oje eiluteje.");
+				}
+				if (pap < 1  || pap > 10) {
+					throw std::runtime_error("Nepavyko nuskaityti duomenu, patikrinkite, ar gerai ivedete duomenis. Klaida " + std::to_string(eilute) + "-oje eiluteje.");
+				}
+				esamas.pazym.push_back(pap);
 			}
-			input >> esamas.egz;
+			if (esamas.pazym.size() < 2) {
+				throw std::logic_error("Mokinys turi tik viena pazymi, negalima nustatyti ar tai namu darbo pazymys ar egzamino pazymys. Klaida " + std::to_string(eilute) + "-oje eiluteje.");
+			}
+			esamas.egz = esamas.pazym[esamas.pazym.size() - 1];
+			esamas.pazym.pop_back();
 			try {
 				esamas.skaiciuotiVidurki();
 				esamas.skaiciuotiMediana();
@@ -241,6 +260,9 @@ void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPava
 			mokiniai.push_back(esamas);
 		}
 		input.close();
+		auto end = high_resolution_clock::now();
+		duration<double> diff = end - start;
+		cout << "\nFailas nuskaitytas per: \a" << diff.count() << "s.\n";
 	} catch (std::exception& e) {
 		cout << "Ivyko klaida. " << e.what() << endl;
 		throw; //Erroras permetamas į funkciją kvietėją. Šiuo atvėju "skaiciuotiRezultatus()" funkciją.
@@ -280,6 +302,7 @@ bool rikPavard(mokinys i, mokinys j) {
 }
 //Mokinių rikiavimo funkcija
 void rikiuotiMokinius(vector<mokinys> &mokiniai, int pasirinkimas) {
+	auto start = high_resolution_clock::now();
 	if (pasirinkimas == 1) {
 		//Rikiavimas pagal vardą
 		sort(mokiniai.begin(), mokiniai.end(), rikVard);
@@ -292,6 +315,10 @@ void rikiuotiMokinius(vector<mokinys> &mokiniai, int pasirinkimas) {
 		//Klaida
 		cout << "Ivyko nenumatyta klaida...";
 	}
+
+	auto end = high_resolution_clock::now();
+	duration<double> diff = end - start;
+	cout << "\nKonteineris surikiuotas per: \a" << diff.count() << "s.\n";
 }
 
 //Pagrindinė apdorojimo funkcija

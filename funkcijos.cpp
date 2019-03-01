@@ -40,3 +40,8 @@ int gen_reiksm(int intPrad, int intPab){
 	std::uniform_int_distribution<int> dist(intPrad, intPab); //intervalas, kuriame generuojame skaičius
 	return dist(mt);
 }
+
+bool arDoubleLygus(double dFirstVal, double dSecondVal)
+{
+	return std::fabs(dFirstVal - dSecondVal) < 1E-2;
+}
