@@ -49,10 +49,10 @@ Duomenų failo formatas:
 - Antras skaičius - skaičius, nurodantis, kiek namų darbų pažymių turi kiekvienas mokinys.
 - Sekančiose eilutėse surašyti duomenys apie mokinius.
 
-> 4 5
-> Vardas1 Pavarde1 8 9 10 6 10 9
-> Vardas2 Pavarde2 7 10 8 5 5 6
-> Vardas3 Pavarde3 8 9 10 6 10 9
+> 4 5  
+> Vardas1 Pavarde1 8 9 10 6 10 9  
+> Vardas2 Pavarde2 7 10 8 5 5 6  
+> Vardas3 Pavarde3 8 9 10 6 10 9  
 > Vardas4 Pavarde4 1 10 8 5 4 6
 
 ## **_Pastebėjimai_**
