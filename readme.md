@@ -10,7 +10,7 @@
 
 ## **_Naudojimosi instrukcijos_**
 
-Paleisti programą galima kompiliuojant rankiniu būdu arba naudojant **make** komandas.
+Programą kompiliuoti galima rankiniu būdu arba naudojant **make** komandas.
 
 `make v1` paleis programą, kuri veikia panaudojant C-tipo masyvus.
 `make v2` paleis programą, naudojančią `std::vector` konteinerius.
