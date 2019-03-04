@@ -25,7 +25,7 @@ struct mokinys {
 	void spausdintiInfo(int maxVardIlgis, int maxPavardIlgis) {
 		cout << setw(maxVardIlgis + 2) << std::left << vardas << setw(maxPavardIlgis + 2) << pavarde;
 		cout << std::setprecision(2) << std::fixed << setw(18) << (0.4 * vidurkis) + (0.6 * egz)
-			<< std::setprecision(2) << std::fixed << setw(18) << (0.4 * mediana) + (0.6 * egz) << endl;
+		     << std::setprecision(2) << std::fixed << setw(18) << (0.4 * mediana) + (0.6 * egz) << endl;
 	}
 
 	void skaiciuotiVidurki() {
@@ -197,8 +197,8 @@ void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPava
 	else {
 		cout << mokSk << " " << ndSk << endl;
 	}
-		mokinys esamas;
 	for (int i = 0; i < mokSk; i++) {
+		mokinys esamas;
 		int pazymys;
 		input >> esamas.vardas >> esamas.pavarde;
 		if (esamas.vardas.size() > maxVardIlgis) maxVardIlgis = esamas.vardas.size();
