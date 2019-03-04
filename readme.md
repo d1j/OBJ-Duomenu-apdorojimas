@@ -36,8 +36,8 @@ Paleisti programą galima sukompiliavus _main_v2.cpp_ ranka arba naudojant `make
 Šioje versijoje pridėtas duomenų skaitymo iš failo funkcionalumas.
 
 - Skaitomas failas turi būti toje pačioje direktorijoje kaip ir vykdoma programa.
-- Duomenų failo pavadinimas privalo būti `duomenys.txt` (tolimesnėse versijose failo pavadinimas galės būti bet koks).
-- Duomenys turi būti griežtai struktūrizuoti (pavyzdys `duomenys.txt faile`).
+- Duomenų failo pavadinimas privalo būti _duomenys.txt_ (tolimesnėse versijose failo pavadinimas galės būti bet koks).
+- Duomenys turi būti griežtai struktūrizuoti (pavyzdys _duomenys.txt_ faile).
 
 Duomenų failo formatas:
 
@@ -66,3 +66,11 @@ Iš naudojimosi instrukcijų savaime aišku, jog duomenų skaitymas iš failo n�
 ## **_Naudojimosi instrukcijos_**
 
 Nuo šios versijos patogiausia programą kompiliuoti naudojant komandą `make` (arba `make v2`).
+
+Duomenų failo formatas išlieka toks pats kaip v0.2 versijoje, tačiau failo pavadinimas gali keistis. Programoje reikia nurodyti failo pavadinimą.
+
+## **_Pastebėjimai_**
+
+_main_v2.cpp_ failo funkcijos ir struktūra buvo išskaidyta į atskirus failus. Nuo šiol _main_v2.cpp_ yra tik main funkcija, kurioje paprastas išorinių funkcijų manipuliavimas; _funkcijos.cpp_ faile laikomos pagrindinės funkcijos, kurių pagalba apdorojami duomenys; Į _mokinys.h_ buvo perkelta struktūra `mokinys`, o struktūros metodai laikomi _mokinys.cpp_ faile.
+
+Panaudoti `try-catch` blokai, kurie nuo šiol gelbėja programą nuo "crashinimo" skaičiuojant vidurkius, medianas bei skaitant duomenų failus.

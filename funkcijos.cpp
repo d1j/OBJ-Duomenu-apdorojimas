@@ -83,7 +83,7 @@ void ivestiMokinius(vector<mokinys> &mokiniai, int rezimas, int &maxVardIlgis, i
 		esamas.mediana = 0;
 		esamas.egz = 0;
 		esamas.pazym.clear();
-		cout<<"\"-\" - baigti vesti mokinius\n" << mokSk + 1 << " mokinio vardas: "; cin >> esamas.vardas;
+		cout << "\"-\" - baigti vesti mokinius\n" << mokSk + 1 << " mokinio vardas: "; cin >> esamas.vardas;
 		if (esamas.vardas != "-") {
 			if (esamas.vardas.size() > maxVardIlgis) maxVardIlgis = esamas.vardas.size();
 			pazymSk = 0;
@@ -140,8 +140,8 @@ void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPava
 		int mokSk, ndSk;
 		input >> mokSk >> ndSk;
 		if (input.fail() || mokSk <= 0 || ndSk < 0) throw std::logic_error("Mokiniu skaicius arba namu darbu skaicius ivestas neteisingai!");
-		mokinys esamas;
 		for (int i = 0; i < mokSk; i++) {
+			mokinys esamas;
 			int pazymys;
 			input >> esamas.vardas >> esamas.pavarde;
 			if (esamas.vardas.size() > maxVardIlgis) maxVardIlgis = esamas.vardas.size();
