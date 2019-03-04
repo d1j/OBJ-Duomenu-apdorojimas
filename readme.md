@@ -4,6 +4,10 @@
 
 ---
 
+Kadangi _readme.md_ ir _makefile_ v0.1 - v0.4 versijoms kūriau tas visas versijas įgyvendinęs, _readme.md_ faile gali būt "balaganas".
+
+---
+
 # v0.1
 
 ---
@@ -74,3 +78,5 @@ Duomenų failo formatas išlieka toks pats kaip v0.2 versijoje, tačiau failo pa
 _main_v2.cpp_ failo funkcijos ir struktūra buvo išskaidyta į atskirus failus. Nuo šiol _main_v2.cpp_ yra tik main funkcija, kurioje paprastas išorinių funkcijų manipuliavimas; _funkcijos.cpp_ faile laikomos pagrindinės funkcijos, kurių pagalba apdorojami duomenys; Į _mokinys.h_ buvo perkelta struktūra `mokinys`, o struktūros metodai laikomi _mokinys.cpp_ faile.
 
 Panaudoti `try-catch` blokai, kurie nuo šiol gelbėja programą nuo "crashinimo" skaičiuojant vidurkius, medianas bei skaitant duomenų failus.
+
+Patobulintas _makefile_ pagal "tutorialą [šioje svetainėje](http://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/).
