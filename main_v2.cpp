@@ -180,7 +180,7 @@ void ivestiMokinius(vector<mokinys> &mokiniai, int rezimas, int &maxVardIlgis, i
 }
 
 void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPavardIlgis) {
-	std::ifstream input("duomenys.txt");
+	std::ifstream input("kursiokai.txt");
 	if (input.fail()) {
 		cout << "Ivyko klaida. Nurodytas failas neegzistuoja!" << endl;
 		exit(EXIT_FAILURE);
@@ -201,18 +201,17 @@ void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPava
 	for (int i = 0; i < mokSk; i++) {
 		int pazymys;
 		input >> esamas.vardas >> esamas.pavarde;
-		cout << esamas.vardas << " " << esamas.pavarde << " ";
 		if (esamas.vardas.size() > maxVardIlgis) maxVardIlgis = esamas.vardas.size();
 		if (esamas.pavarde.size() > maxPavardIlgis) maxPavardIlgis = esamas.pavarde.size();
 		for (int j = 0; j < ndSk; j++) {
-			input >> pazymys; cout << pazymys << " ";
+			input >> pazymys;
 			if ( pazymys <= 0 || pazymys > 10) {
 				cout << "Ivyko klaida. Mokiniu duomenys ivesti neteisingu formatu!" << endl;
 				exit(EXIT_FAILURE);
 			}
 			esamas.pazym.push_back(pazymys);
 		}
-		input >> esamas.egz; cout << esamas.egz << endl;
+		input >> esamas.egz;
 		esamas.skaiciuotiMediana();
 		esamas.skaiciuotiVidurki();
 		mokiniai.push_back(esamas);
