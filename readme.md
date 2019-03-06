@@ -2,7 +2,13 @@
 
 ---
 
-Kadangi _readme.md_ ir _makefile_ v0.1 - v0.4 versijoms kūriau tas visas versijas įgyvendinęs, _readme.md_ faile gali būt "balaganas".
+**PERSPĖJIMAS!!!**
+
+Kadangi _readme.md_ ir _makefile_ v0.1 - v0.4 versijoms kūriau tas visas versijas įgyvendinęs, _readme.md_ failuose gali būt "balaganas".
+
+**readme.md** failas daugiausia informacijos apie ankstesnes versijas turės **"master branch'e"**. Readme failuose, pateiktuose su releasais, gali trūkti informacijos arba gali pasitaikyti klaidingos informacijos.
+
+**Nagrinėjant skirtingus releasus, patartina naudotis tik šituo readme failu.**
 
 ---
 
@@ -47,10 +53,10 @@ Duomenų failo formatas:
 - Antras skaičius - skaičius, nurodantis, kiek namų darbų pažymių turi kiekvienas mokinys.
 - Sekančiose eilutėse surašyti duomenys apie mokinius.
 
-> 4 5
-> Vardas1 Pavarde1 8 9 10 6 10 9
-> Vardas2 Pavarde2 7 10 8 5 5 6
-> Vardas3 Pavarde3 8 9 10 6 10 9
+> 4 5  
+> Vardas1 Pavarde1 8 9 10 6 10 9  
+> Vardas2 Pavarde2 7 10 8 5 5 6  
+> Vardas3 Pavarde3 8 9 10 6 10 9  
 > Vardas4 Pavarde4 1 10 8 5 4 6
 
 ## **_Pastebėjimai_**
@@ -78,3 +84,46 @@ _main_v2.cpp_ failo funkcijos ir struktūra buvo išskaidyta į atskirus failus.
 Panaudoti `try-catch` blokai, kurie nuo šiol gelbėja programą nuo "crashinimo" skaičiuojant vidurkius, medianas bei skaitant duomenų failus.
 
 Patobulintas _makefile_ pagal "tutorialą" [šioje svetainėje](http://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/).
+
+---
+
+# v0.4
+
+---
+
+## **_Naudojimosi instrukcijos_**
+
+Programą kompiliuojame komandos `make` (arba `make main`) pagalba. Paleidus programą, sekti instrukcijas.
+
+Programos vykdymui būtini `\duomenys` bei `\rezultatai` folderiai. **Šių folerių netrinti!**
+
+Folderyje `\duomenys` saugomi duomenų failai, tad, testuojant programą, failus kelti čia. Rezultatus rasite folderyje `\rezultatai`. _PASTABA: nurodant rezultatų failo pavadinimą, nurodyti reikia tik failo vardą, programa automatiškai parenka .txt formatą (įvedus pavadinimą "rez" bus segeneruojami failai "rez_kiet.txt" ir "rez_varg.txt")_.
+
+Generuojant duomenų failus pagal `2. Generuoti duomenis` bus sugeneruotas jusų nurodytas skaičius mokinių, su pažymiais, kurių kiekis skiriasi nuo 1 iki 20 (Pavyzdys `\duomenys\100.txt` faile). _PASTABA: norint generuoti daugiau pažymių, reikia keisti programos kodą faile `generavimas.h`_.
+
+**Failas `\duomenys\100.txt` greičiausiai neveiks dėl platformų skirtumo, todėl patariama jo nenaudoti.**
+
+Nuo šios versijos atsiranda galimybė ranka suvestus duomenis išsaugoti rezultatų failuose.
+
+## **_Pastebėjimai_**
+
+- _main_v2.cpp_ pervadintas į _main.cpp_. Pasikeitė _main.cpp_ struktūra;
+- nuo šiol `make` kompiliuoja failą pavadinimu _main.exe_;
+- duomenų ir rezultatų failai nuo šiol saugomi atskiruose folderiuose (reikėtų programos vykdymo pradžioje patikrinti, ar folderiai egzistoja, nes jei jie neegzituoja, programa tinkamai neveikia. Šitas reikalas gal bus ištaisytas ateity)
+- 
+
+## **_Analizė_**
+
+| Mokinių skaičius | Failo generavimas | Failo skaitymas | Rikiavimas | Išvedimas (į failą) | Viso      |
+| ---------------- | ----------------- | --------------- | ---------- | ------------------- | --------- |
+| 100              | 0.019736s         | 0.00498s        | 0.003001s  | 0.034002s           | 0.061719s |
+| 1000             | 0.041904s         | 0.035984s       | 0.048022s  | 0.079989s           | 0.205899s |
+| 10000            | 0.208012s         | 0.29104s        | 0.511567s  | 0.337026s           | 1.347645s |
+| 100000           | 2.00921s          | 2.6623s         | 6.64547s   | 3.16874s            | 14.48572s |
+| 1000000          | 19.5229s          | 27.1462s        | 79.8309s   | 32.4162s            | 158.9162s |
+| 10000000         | std::bad_alloc    | -               | -          | -                   | -         |
+
+Primityviai mąstant, viso proceso (nuo duomenų generavimo iki duomenų išvedimo) laikas turi kisti tiesiogiai proporcingai didėjant duomenų skaičiui x10, tačiau taip nėra dėl keleto priežasčių:
+* kai mokinių skaičius yra nedidelis (100, 1000 ar 10000), viso laiko atžvilgiu duomenų failų ir rezultatų failų sukūrimas užima daugiausia laiko. Todėl ir bendras laikas iš 100 mokinių į 1000 padidėja x3.33 (0.205899s/0.061719s) karto, o iš 1000 į 10000 - x6.54 karto.
+* didėjant duomenų skaičiui, laikas, atidarant ir kuriant failus, tampa nereikšmingas, tačiau programos veikimo laikas visgi nedidėja x10 karto; laiko didėjimas tampa ~x11 kartų. Taip greičiausiai yra dėl to, kad naudojamas `std::sort` algoritmas, kurio sudėtingumas yra _O(n log n)_, todėl matome, kad didėjant duomenų skaičiui, rikiavimo trukmė daugmaž didėja x12 kartų. Kadangi rikiavimas užima daugiausia laiko programos veikime, dėl to visos programos veikimo laikas ir keičiasi x11 karto.
+* pabandžius sugeneruoti failą su 10 000 000 mokinių, kompiuteris neatlaikė įtampos.

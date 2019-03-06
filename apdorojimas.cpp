@@ -234,6 +234,7 @@ void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPava
 			int pap;
 			input >> esamas.vardas
 			      >> esamas.pavarde;
+			if(esamas.vardas == "" || esamas.pavarde == "") continue;
 			if (esamas.vardas.size() > maxVardIlgis) maxVardIlgis = esamas.vardas.size();
 			if (esamas.pavarde.size() > maxPavardIlgis) maxPavardIlgis = esamas.pavarde.size();
 			while (input.peek() != '\n' && !input.eof()) {
