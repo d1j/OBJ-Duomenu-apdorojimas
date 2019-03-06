@@ -109,8 +109,8 @@ Nuo šios versijos atsiranda galimybė ranka suvestus duomenis išsaugoti rezult
 
 - _main_v2.cpp_ pervadintas į _main.cpp_. Pasikeitė _main.cpp_ struktūra;
 - nuo šiol `make` kompiliuoja failą pavadinimu _main.exe_;
-- duomenų ir rezultatų failai nuo šiol saugomi atskiruose folderiuose (reikėtų programos vykdymo pradžioje patikrinti, ar folderiai egzistoja, nes jei jie neegzituoja, programa tinkamai neveikia. Šitas reikalas gal bus ištaisytas ateity)
-- 
+-
+-
 
 ## **_Analizė_**
 
