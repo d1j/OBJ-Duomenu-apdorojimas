@@ -109,8 +109,10 @@ Nuo šios versijos atsiranda galimybė ranka suvestus duomenis išsaugoti rezult
 
 - _main_v2.cpp_ pervadintas į _main.cpp_. Pasikeitė _main.cpp_ struktūra;
 - nuo šiol `make` kompiliuoja failą pavadinimu _main.exe_;
--
--
+- _funkcijos.h_ faile aprašomos bendros funkcijos (įvesties, skaičių generavimo, failų egzistavimo tikrinimo ir t.t.), naudojamos visuose failuose.
+- _apdorojimas.cpp_ faile randasi didžioji dalis funkcijų, skirtų mokinių rezultatų apdorojimui (Kai kurios skaičiavimo funkcijos yra struktūros `mokinys` metodai, saugomi *mokinys.cpp* faile)
+- _generavimas.h_ aprašyta funkcija, kurios pagalba galime sugeneruoti duomenų failus.
+- pamiršau padaryt galimybę vartotojui nurodyti, kiek daugiausia pažymių mokinys gali turėti (defaultinės reikšmės: min-1; max-20).
 
 ## **_Analizė_**
 
@@ -122,6 +124,11 @@ Nuo šios versijos atsiranda galimybė ranka suvestus duomenis išsaugoti rezult
 | 100000           | 2.00921s          | 2.6623s         | 6.64547s   | 3.16874s            | 14.48572s |
 | 1000000          | 19.5229s          | 27.1462s        | 79.8309s   | 32.4162s            | 158.9162s |
 | 10000000         | std::bad_alloc    | -               | -          | -                   | -         |
+Testai atlikti su tokiais parametrais: 
+```c++
+#define min_paz_sk 1
+#define max_paz_sk 20
+```
 
 Primityviai mąstant, viso proceso (nuo duomenų generavimo iki duomenų išvedimo) laikas turi kisti tiesiogiai proporcingai didėjant duomenų skaičiui x10, tačiau taip nėra dėl keleto priežasčių:
 * kai mokinių skaičius yra nedidelis (100, 1000 ar 10000), viso laiko atžvilgiu duomenų failų ir rezultatų failų sukūrimas užima daugiausia laiko. Todėl ir bendras laikas iš 100 mokinių į 1000 padidėja x3.33 (0.205899s/0.061719s) karto, o iš 1000 į 10000 - x6.54 karto.
