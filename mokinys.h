@@ -1,4 +1,4 @@
-w#ifndef MOKINYS_H
+#ifndef MOKINYS_H
 #define MOKINYS_H
 
 #include <vector>
