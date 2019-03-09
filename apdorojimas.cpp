@@ -1,6 +1,6 @@
 #include "apdorojimas.h"
 
-#include <vector>
+#include <deque>
 #include <string>
 #include <iostream>
 #include <iomanip>
@@ -20,13 +20,13 @@ using std::cout;
 using std::cin;
 using std::endl;
 using std::setw;
-using std::vector;
+using std::deque;
 using namespace std::chrono;
 
 //Apsaugota sveikojo skaičiaus įvedimo funkcija.
 //Tokia įvestis užtkrina kad į "int" tipo kintamąjį nebus bandoma įrašyti nepalaikomo tipo duomenų
 
-void spausdintiMokinius(vector<mokinys> &mokiniai, int maxVardIlgis, int maxPavardIlgis, int pasirink) {
+void spausdintiMokinius(deque<mokinys> &mokiniai, int maxVardIlgis, int maxPavardIlgis, int pasirink) {
 	if (pasirink == 1) {
 		cout << std::left << setw(maxVardIlgis + 2) << "Vardas" << setw(maxPavardIlgis + 2) << "Pavarde";
 	} else if (pasirink == 2) {
@@ -53,7 +53,7 @@ void generuotiPazymius(mokinys &esamas, int pazSk) {
 //Pagrindinė įvesties ranka funkcija
 //rėžimas == 1 - pažymiu įvestis ranka
 //rėžimas == 2 - pažymiu generavimas
-void ivestiMokinius(vector<mokinys> &mokiniai, int rezimas, int &maxVardIlgis, int &maxPavardIlgis) {
+void ivestiMokinius(deque<mokinys> &mokiniai, int rezimas, int &maxVardIlgis, int &maxPavardIlgis) {
 	int genPazSk = 0;
 	cout << "---------------------------------------------------------\n";
 	switch (rezimas) {
@@ -132,7 +132,7 @@ void ivestiMokinius(vector<mokinys> &mokiniai, int rezimas, int &maxVardIlgis, i
 }
 
 //Funkcija atlieka v0.4 užduotį ir sudaro du mokinių sąrašus atskiruose failuose "./rezultatai" aplanke
-void isvestiMokinius(vector<mokinys> &mokiniai, int maxVardIlgis, int maxPavardIlgis, int vardPavKrit) {
+void isvestiMokinius(deque<mokinys> &mokiniai, int maxVardIlgis, int maxPavardIlgis, int vardPavKrit) {
 	bool pavPower = true;
 	std::string pavad;
 	while (pavPower) {
@@ -218,7 +218,7 @@ void isvestiMokinius(vector<mokinys> &mokiniai, int maxVardIlgis, int maxPavardI
 }
 
 //Duomenų skaitymo iš failo funkcija
-void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPavardIlgis) {
+void skaitytiMokinius(deque<mokinys> &mokiniai, int &maxVardIlgis, int &maxPavardIlgis) {
 	string pavadinimas;
 	int eilute = 0;
 	cout << "Iveskite failo pavadinima (PVZ failas.txt): "; cin >> pavadinimas;
@@ -302,7 +302,7 @@ bool rikPavard(mokinys i, mokinys j) {
 	return (i.pavarde < j.pavarde);
 }
 //Mokinių rikiavimo funkcija
-void rikiuotiMokinius(vector<mokinys> &mokiniai, int pasirinkimas) {
+void rikiuotiMokinius(deque<mokinys> &mokiniai, int pasirinkimas) {
 	auto start = high_resolution_clock::now();
 	if (pasirinkimas == 1) {
 		//Rikiavimas pagal vardą
@@ -325,7 +325,7 @@ void rikiuotiMokinius(vector<mokinys> &mokiniai, int pasirinkimas) {
 //Pagrindinė apdorojimo funkcija
 void skaiciuotiRezultatus() {
 	try {
-		vector<mokinys> mokiniai;
+		deque<mokinys> mokiniai;
 		int maxVardIlgis = 6, maxPavardIlgis = 7; //"vardas" - 6 simboliai//"pavarde" - 7 simboliai
 
 		cout << "REZULTATU SKAICIAVIMAS\n";
