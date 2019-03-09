@@ -36,10 +36,7 @@ noredami nutraukti generavima, bet kada irasykite "-1"
 Iveskite, kiek mokiniu norite sugeneruoti: 100000
 Iveskite tinkama failo pavadinima (PVZ.: duomenys.txt arba input.in): 100000.txt
 
-Failas sugeneruotas per: 2.00921s.
-Failas nuskaitytas per: 2.6623s.
-Konteineris surikiuotas per: 6.64547s.
-Rezultatai isvesti per: 3.16874s.
+Failas sugeneruotas per: 	
 
 
 DUOMENU GENERAVIMAS
