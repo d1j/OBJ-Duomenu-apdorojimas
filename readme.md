@@ -158,7 +158,7 @@ Iš esmės programos funkcionalumas ir naudojimosi taisyklės nepakito, tad, kai
 
 ## **_Pastebėjimai_**
 
-Programa mažai kuo pakito nuo v0.4 versijos. Šiokie tokie pokyčiai matomi v0.5 įgyvendinime su `std::list` konteineriais, kadangi šis konteineris neuturi `[]` "random access" operatoriaus. Todėl 
+Programa mažai kuo pakito nuo v0.4 versijos. Šiokie tokie pokyčiai matomi v0.5 įgyvendinime su `std::list` konteineriais, kadangi šis konteineris neuturi `[]` "random access" operatoriaus. Todėl teko panaudoti ir pritaikyti `std::iterator` ir `std::next` funkcionalumus.
 
 ## **_Analizė_**
 Pastaba: Programa sukurta taip, jog į *failo skaitymo* laiką įeina ir n.d. vidurkio bei medianos skaičiavimas, o *išvedimo į failą* laiką įeina galutinio rezultato skaičiavimas. Todėl negalėjau neįskaičiuoti *išvedimo į failus* laiko, kaip prašo užduotis.
@@ -178,3 +178,13 @@ Testai atlikti su tokiais parametrais:
 mokinių rikiavimas pagal VARDĄ
 rezultatų skaičiavimas pagal VIDURKĮ
 ```
+
+Gauti failo skaitymo (į kurį įeina rezultatų dalinis skaičiavimas) ir rezultatų išvedimo laiko rezultatai nenustebino - matomi vietomis šiek tiek reikšmingi, o kai kur visai nereikšmingi pokyčiai, naudojant skirtingus konteinerius. Tačiau keisti pasirodė rikiavimo laiko pokyčiai, kadangi visiems konteineriams naudojau standartines `std::sort` bei `list::sort` rikiavimo funkcijas ir rezultatai neturėjo taip drastiškai skirtis. Greit supratau, kad problema kode: nuo pat pradžių į pagalbines rikiavimui skirtas funkcijas `rikVard` ir `rikPavard` buvo paduodamos kintamųjų kopijos, o perdarydamas kodą su `std::list` gavau klaidą naudodamas tas funkcijas, todėl jas pertvarkiau, kad kintamieji būtų paduodami pagal adresą. 
+
+Rezultatai po klaidos ištaisymo:
+
+| Konteinerio tipas | Failo skaitymas | Rikiavimas | Išvedimas (į failus) | Viso      |
+| ----------------- | --------------- | ---------- | -------------------- | --------- |
+| std::vector       | 1.15691s        | 0.622723s  | 1.33029s             | 3.109923s |
+| std::list         | 1.99002s        | 0.218764s  | 1.6116s              | 3.820384s |
+| std::deque        | 1.11233ss       | 0.798517s  | 1.39263s             | 3.303477s |
