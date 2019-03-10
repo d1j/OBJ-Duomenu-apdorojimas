@@ -272,7 +272,7 @@ void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPava
 }
 
 //Pagalbinė funkcija, nustatanti mokinio pirmenybę sąraše tarp dviejų mokinių pagal Vardą
-bool rikVard(mokinys i, mokinys j) {
+bool rikVard(mokinys& i, mokinys& j) {
 	if (i.vardas < j.vardas) {
 		return true;
 	}
@@ -286,7 +286,7 @@ bool rikVard(mokinys i, mokinys j) {
 	}
 }
 //Pagalbinė funkcija, nustatanti mokinio pirmenybę sąraše tarp dviejų mokinių pagal pavardę
-bool rikPavard(mokinys i, mokinys j) {
+bool rikPavard(mokinys& i, mokinys& j) {
 	if (i.pavarde < j.pavarde) {
 		return true;
 	}
