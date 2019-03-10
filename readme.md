@@ -186,5 +186,10 @@ Rezultatai po klaidos ištaisymo:
 | Konteinerio tipas | Failo skaitymas | Rikiavimas | Išvedimas (į failus) | Viso      |
 | ----------------- | --------------- | ---------- | -------------------- | --------- |
 | std::vector       | 1.15691s        | 0.622723s  | 1.33029s             | 3.109923s |
-| std::list         | 1.99002s        | 0.218764s  | 1.6116s              | 3.820384s |
 | std::deque        | 1.11233ss       | 0.798517s  | 1.39263s             | 3.303477s |
+| std::list         | 1.99002s        | 0.218764s  | 1.6116s              | 3.820384s |
+
+Išvados: 
+* Mano programos veikimo atžvilgiu naudingiausia naudoti `std::vector` konteinerį, kadangi šis konteineris stipriai pranoksta `std::list`, kuomet duomenys po vieną pridedami į konteinerio galą (failo skaitymas) arba yra vienas po kito pasiekiami (iteruojami) ir naudojami (išvedimas į failus, rezultatų skaičiavimas). Panašius rezultatus šioj srity parodo `std::deque`, tačiau `std::vector` pastarąjį pranoksta rikiavime, kuris trunka mažiau greičiausia dėl konteinerio adresų paskyrimo. Kiek supratau, `std::vector` konteineris paskiria vieną nuoseklų gabalą atminties RAM'e, o `std::deque` paskiria atmintį atskirais gabalais, kurie gali būti išmėtyti po atmintį skirtingose vietose. Todėl rikiuojant greičiau nustatoma `std::vector` elemento vieta atminty, negu `std::deque`
+* Nors ir `std::list` vienareikšmiškai greičiausias duomenų rikiavime, jo naudoti neapsimoka, nes duomenys turi kažkaip atsidurt konteineryje, o matyti, jog `std::list` nėra geriausias sprendimas tą padaryti.
+* `std::list` pranoksta kitus konteinerius rikiavime, dėl to, kad adresų išdėstymo struktūra kardinaliai skiriasi: `std::list` dažniausiai implementuojamas kaip *doubly-linked list'as*, todėl elementai yra išmėtyti po atmintį ir yra tarpusavy susieti nuorodomis į gretimų elementų adresus. Šis skirtumas leidžia elementus apkeisti pakeičiant adresų sąsajas, o `std::vector` ir `std::deque` reikia perkopijuoti visą elemntų informaciją, nes keisti adresų negalime dėl griežtos konteinerių struktūros.
