@@ -115,19 +115,24 @@ Nuo šios versijos atsiranda galimybė ranka suvestus duomenis išsaugoti rezult
 - pamiršau padaryt galimybę vartotojui nurodyti, kiek daugiausia pažymių mokinys gali turėti (defaultinės reikšmės: min-1; max-20).
 
 ## **_Analizė_**
+Pastaba: Programa sukurta taip, jog į *failo skaitymo* laiką įeina ir n.d. vidurkio bei medianos skaičiavimas, o *išvedimo į failą* laiką įeina galutinio rezultato skaičiavimas.
 
-| Mokinių skaičius | Failo generavimas | Failo skaitymas | Rikiavimas | Išvedimas (į failą) | Viso      |
-| ---------------- | ----------------- | --------------- | ---------- | ------------------- | --------- |
-| 100              | 0.019736s         | 0.00498s        | 0.003001s  | 0.034002s           | 0.061719s |
-| 1000             | 0.041904s         | 0.035984s       | 0.048022s  | 0.079989s           | 0.205899s |
-| 10000            | 0.208012s         | 0.29104s        | 0.511567s  | 0.337026s           | 1.347645s |
-| 100000           | 2.00921s          | 2.6623s         | 6.64547s   | 3.16874s            | 14.48572s |
-| 1000000          | 19.5229s          | 27.1462s        | 79.8309s   | 32.4162s            | 158.9162s |
-| 10000000         | std::bad_alloc    | -               | -          | -                   | -         |
+| Mokinių skaičius | Failo generavimas | Failo skaitymas | Rikiavimas | Išvedimas (į failus) | Viso      |
+| ---------------- | ----------------- | --------------- | ---------- | -------------------- | --------- |
+| 100              | 0.019736s         | 0.00498s        | 0.003001s  | 0.034002s            | 0.061719s |
+| 1000             | 0.041904s         | 0.035984s       | 0.048022s  | 0.079989s            | 0.205899s |
+| 10000            | 0.208012s         | 0.29104s        | 0.511567s  | 0.337026s            | 1.347645s |
+| 100000           | 2.00921s          | 2.6623s         | 6.64547s   | 3.16874s             | 14.48572s |
+| 1000000          | 19.5229s          | 27.1462s        | 79.8309s   | 32.4162s             | 158.9162s |
+| 10000000         | std::bad_alloc    | -               | -          | -                    | -         |
 Testai atlikti su tokiais parametrais: 
 ```c++
 #define min_paz_sk 1
 #define max_paz_sk 20
+```
+```
+mokinių rikiavimas pagal VARDĄ
+rezultatų skaičiavimas pagal VIDURKĮ
 ```
 
 Primityviai mąstant, viso proceso (nuo duomenų generavimo iki duomenų išvedimo) laikas turi kisti tiesiogiai proporcingai didėjant duomenų skaičiui x10, tačiau taip nėra dėl keleto priežasčių:
@@ -140,9 +145,36 @@ Primityviai mąstant, viso proceso (nuo duomenų generavimo iki duomenų išvedi
 # v0.5
 
 ---
+## **_Naudojimosi instrukcijos_**
+Padaręs v0.4 versiją, iššakojau projektą į 3 papildomas šakas: 
+* `v0.5/v1.0vector` šakoje įgyvendinta v0.5 versija su `std::vector` konteineriais,
+*  `v0.5/v1.0list` šakoje įgyvendinta su `std::list` konteineriais,
+*  `v0.5/v1.0deque` šakoje projektas įgyvenditas su `std::deque` konteineriais
 
-| Konteinerio tipas | Failo skaitymas | Rikiavimas | Išvedimas (į failą) | Viso      |
-| ----------------- | --------------- | ---------- | ------------------- | --------- |
-| std::vector       | 1.16217s        | 2.76823s   | 1.27052s            | 5.20092s  |
-| std::list         | 1.99002s        | 0.218764s  | 1.6116s             | 3.820384s |
-| std::deque        | 1.16457s        | 4.92085s   | 1.42958s            | 7.515s    |
+`v0.5/v1.0vector` ir `v0.5/v1.0deque` kodas skiriasi tik tuo, kad visur *vector* buvo pakeista į *deque*, tad projektą releasinsiu tik su `std::vector` ir `std::list` konteineriais.
+
+Iš esmės programos funkcionalumas ir naudojimosi taisyklės nepakito, tad, kaip naudotis, žiūrėti į v0.4 ir ankstesnių versijų naudojimosi aprašus.
+
+
+## **_Pastebėjimai_**
+
+Programa mažai kuo pakito nuo v0.4 versijos. Šiokie tokie pokyčiai matomi v0.5 įgyvendinime su `std::list` konteineriais, kadangi šis konteineris neuturi `[]` "random access" operatoriaus. Todėl 
+
+## **_Analizė_**
+Pastaba: Programa sukurta taip, jog į *failo skaitymo* laiką įeina ir n.d. vidurkio bei medianos skaičiavimas, o *išvedimo į failą* laiką įeina galutinio rezultato skaičiavimas. Todėl negalėjau neįskaičiuoti *išvedimo į failus* laiko, kaip prašo užduotis.
+
+| Konteinerio tipas | Failo skaitymas | Rikiavimas | Išvedimas (į failus) | Viso      |
+| ----------------- | --------------- | ---------- | -------------------- | --------- |
+| std::vector       | 1.16217s        | 2.76823s   | 1.27052s             | 5.20092s  |
+| std::list         | 1.99002s        | 0.218764s  | 1.6116s              | 3.820384s |
+| std::deque        | 1.16457s        | 4.92085s   | 1.42958s             | 7.515s    |
+
+Testai atlikti su tokiais parametrais: 
+```c++
+#define min_paz_sk 1
+#define max_paz_sk 20
+```
+```
+mokinių rikiavimas pagal VARDĄ
+rezultatų skaičiavimas pagal VIDURKĮ
+```
