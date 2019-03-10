@@ -134,3 +134,15 @@ Primityviai mąstant, viso proceso (nuo duomenų generavimo iki duomenų išvedi
 * kai mokinių skaičius yra nedidelis (100, 1000 ar 10000), viso laiko atžvilgiu duomenų failų ir rezultatų failų sukūrimas užima daugiausia laiko. Todėl ir bendras laikas iš 100 mokinių į 1000 padidėja x3.33 (0.205899s/0.061719s) karto, o iš 1000 į 10000 - x6.54 karto.
 * didėjant duomenų skaičiui, laikas, atidarant ir kuriant failus, tampa nereikšmingas, tačiau programos veikimo laikas visgi nedidėja x10 karto; laiko didėjimas tampa ~x11 kartų. Taip greičiausiai yra dėl to, kad naudojamas `std::sort` algoritmas, kurio sudėtingumas yra _O(n log n)_, todėl matome, kad didėjant duomenų skaičiui, rikiavimo trukmė daugmaž didėja x12 kartų. Kadangi rikiavimas užima daugiausia laiko programos veikime, dėl to visos programos veikimo laikas ir keičiasi x11 karto.
 * pabandžius sugeneruoti failą su 10 000 000 mokinių, kompiuteris neatlaikė įtampos.
+
+---
+
+# v0.5
+
+---
+
+| Konteinerio tipas | Failo skaitymas | Rikiavimas | Išvedimas (į failą) | Viso      |
+| ----------------- | --------------- | ---------- | ------------------- | --------- |
+| std::vector       | 1.16217s        | 2.76823s   | 1.27052s            | 5.20092s  |
+| std::list         | 1.99002s        | 0.218764s  | 1.6116s             | 3.820384s |
+| std::deque        | 1.16457s        | 4.92085s   | 1.42958s            | 7.515s    |
