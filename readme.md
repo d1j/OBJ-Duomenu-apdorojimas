@@ -193,3 +193,27 @@ Išvados:
 * Mano programos veikimo atžvilgiu naudingiausia naudoti `std::vector` konteinerį, kadangi šis konteineris stipriai pranoksta `std::list`, kuomet duomenys po vieną pridedami į konteinerio galą (failo skaitymas) arba yra vienas po kito pasiekiami (iteruojami) ir naudojami (išvedimas į failus, rezultatų skaičiavimas). Panašius rezultatus šioj srity parodo `std::deque`, tačiau `std::vector` pastarąjį pranoksta rikiavime, kuris trunka mažiau greičiausia dėl konteinerio adresų paskyrimo. Kiek supratau, `std::vector` konteineris paskiria vieną nuoseklų gabalą atminties RAM'e, o `std::deque` paskiria atmintį atskirais gabalais, kurie gali būti išmėtyti po atmintį skirtingose vietose. Todėl rikiuojant greičiau nustatoma `std::vector` elemento vieta atminty, negu `std::deque`
 * Nors ir `std::list` vienareikšmiškai greičiausias duomenų rikiavime, jo naudoti neapsimoka, nes duomenys turi kažkaip atsidurt konteineryje, o matyti, jog `std::list` nėra geriausias sprendimas tą padaryti.
 * `std::list` pranoksta kitus konteinerius rikiavime, dėl to, kad adresų išdėstymo struktūra kardinaliai skiriasi: `std::list` dažniausiai implementuojamas kaip *doubly-linked list'as*, todėl elementai yra išmėtyti po atmintį ir yra tarpusavy susieti nuorodomis į gretimų elementų adresus. Šis skirtumas leidžia elementus apkeisti pakeičiant adresų sąsajas, o `std::vector` ir `std::deque` reikia perkopijuoti visą elementų informaciją, nes keisti adresų negalime dėl griežtos konteinerių struktūros.
+
+---
+
+# v1.0
+
+---
+## **_Naudojimosi instrukcijos_**
+
+Man atrodo, kad kurti ir vėliau peržiūrėti atskirus 6 releasus bus nepatogu ir painu, todėl jų nekursiu.
+
+Pirmos strategijos kodą galima peržiūrėti klonuojant repozitoriją ir nuėjus į "branch'ą" pavadinimu `v1.0_1strat`. Jame nueiti į commitų "log'ą" ir atitinkamai susirasti norimą commitą pagal komentarus. Šiame "branch'e" "commit'inau" tokia eilės tvarka: kodas su std::list -> kodas su std::vector -> kodas su std::deque
+
+Antros strategijos kodą taip pat galima peržiūrėti klonuojant repozitoriją ir nuėjus į "branch'ą" pavadinimu `v1.0_2strat`. Jame nueiti į commitų "log'ą" ir atitinkamai susirasti norimą commitą pagal komentarus. Šiame "branch'e" "commit'inau" tokia eilės tvarka: kodas su std::list -> kodas su std::vector -> kodas su std::deque
+
+## **_Pastebėjimai_**
+* Supratau, kad norint atlikti kuo tikslesnį laiko matavimą, reikia pašalinti visus nereikalingus "background'o" procesus ir tuos pačius bandymus atlikti keletą kartų, išvestį rezultatų vidurkį. Tą supratęs perspėju, kad tiek praetų versijų rezultatai tiek tolimesni rezultatai gali būti iškraipyti "muzikos klausymosi naudojantis youtube" ir kitokių pašalinių veiklų. Tolimesnius bandymus stengiausi atlikti neapkraunant kompiuterio pašaliniais procesais.
+* v0.5 versijos failo skaitymo laikas tarp `std::list` ir kitų konteinerių drastiškai skiriasi dėl kodo dalies, kur yra pasiekiamas paskutinis pažymių konteinerio narys tam, kad jo reikšmę prilygint egzamino pažymio reikšmei. 
+* ```c++
+  //kodas, kurį naudojau su std::list konteineriais
+  esamas.egz = *--esamas.pazym.end();
+  //kodas, kurį naudojau su std::vector konteineriais
+  esamas.egz = esamas.pazym[esamas.pazym.size() - 1];
+  ```
+ * Išbandęs `std::list` kodą su `std::vector` konteineriais, pastebėjau, kad ir su `std::vector` duomenų įrašymas trunka tiek pat, kiek ir su `std::list`. Vadinasi tokiu būdu pasiekti paskutinį listo elementą - neefektyvu. Pagooglinau ir supratau, kad egzistuoja list::back metodas, kurį ir reikįjo naudoti šiuo atvėju
