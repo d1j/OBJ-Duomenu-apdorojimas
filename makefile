@@ -8,3 +8,4 @@ OBJ = main.o mokinys.o funkcijos.o apdorojimas.o generavimas.o
 
 main: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS)
+ 
