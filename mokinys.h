@@ -1,14 +1,14 @@
 #ifndef MOKINYS_H
 #define MOKINYS_H
 
-#include <list>
+#include <vector>
 #include <string>
 #include <fstream>
 
 struct mokinys {
 	std::string vardas = "";
 	std::string pavarde = "";
-	std::list<int> pazym;
+	std::vector<int> pazym;
 	double egz = 0; //egzamino pažymys
 	double vidurkis = 0; //namų darbų pažymių vidurkis
 	double mediana = 0; //namų darbų pažymių mediana

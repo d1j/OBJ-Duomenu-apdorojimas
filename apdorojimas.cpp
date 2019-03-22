@@ -237,7 +237,7 @@ void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPava
 			if (esamas.pazym.size() < 2) {
 				throw std::logic_error("Mokinys turi tik viena pazymi, negalima nustatyti ar tai namu darbo pazymys ar egzamino pazymys. Klaida " + std::to_string(eilute) + "-oje eiluteje.");
 			}
-			esamas.egz = *--esamas.pazym.end();
+			esamas.egz = esamas.pazym[esamas.pazym.size() - 1];
 			esamas.pazym.pop_back();
 			try {
 				esamas.skaiciuotiVidurki();
