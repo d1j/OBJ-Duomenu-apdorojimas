@@ -1,6 +1,6 @@
 #include "apdorojimas.h"
 
-#include <list>
+#include <vector>
 #include <string>
 #include <iostream>
 #include <iomanip>
@@ -20,13 +20,13 @@ using std::cout;
 using std::cin;
 using std::endl;
 using std::setw;
-using std::list;
+using std::vector;
 using namespace std::chrono;
 
 //Apsaugota sveikojo skaičiaus įvedimo funkcija.
 //Tokia įvestis užtkrina kad į "int" tipo kintamąjį nebus bandoma įrašyti nepalaikomo tipo duomenų
 
-void spausdintiMokinius(list<mokinys> &mokiniai, int maxVardIlgis, int maxPavardIlgis, int pasirink) {
+void spausdintiMokinius(vector<mokinys> &mokiniai, int maxVardIlgis, int maxPavardIlgis, int pasirink) {
 	if (pasirink == 1) {
 		cout << std::left << setw(maxVardIlgis + 2) << "Vardas" << setw(maxPavardIlgis + 2) << "Pavarde";
 	} else if (pasirink == 2) {
@@ -55,7 +55,7 @@ void generuotiPazymius(mokinys &esamas, int pazSk) {
 //Pagrindinė įvesties ranka funkcija
 //rėžimas == 1 - pažymiu įvestis ranka
 //rėžimas == 2 - pažymiu generavimas
-void ivestiMokinius(list<mokinys> &mokiniai, int rezimas, int &maxVardIlgis, int &maxPavardIlgis) {
+void ivestiMokinius(vector<mokinys> &mokiniai, int rezimas, int &maxVardIlgis, int &maxPavardIlgis) {
 	int genPazSk = 0;
 	cout << "---------------------------------------------------------\n";
 	switch (rezimas) {
@@ -134,7 +134,7 @@ void ivestiMokinius(list<mokinys> &mokiniai, int rezimas, int &maxVardIlgis, int
 }
 
 //Funkcija atlieka v0.4 užduotį ir sudaro du mokinių sąrašus atskiruose failuose "./rezultatai" aplanke
-void isvestiMokinius(list<mokinys> &varg, list<mokinys> &kiet, int maxVardIlgis, int maxPavardIlgis, int vardPavKrit) {
+void isvestiMokinius(vector<mokinys> &varg, vector<mokinys> &kiet, int maxVardIlgis, int maxPavardIlgis, int vardPavKrit) {
 	bool pavPower = true;
 	std::string pavad;
 	while (pavPower) {
@@ -205,7 +205,7 @@ void isvestiMokinius(list<mokinys> &varg, list<mokinys> &kiet, int maxVardIlgis,
 }
 
 //Duomenų skaitymo iš failo funkcija
-void skaitytiMokinius(list<mokinys> &mokiniai, int &maxVardIlgis, int &maxPavardIlgis) {
+void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPavardIlgis) {
 	string pavadinimas;
 	int eilute = 0;
 	cout << "Iveskite failo pavadinima (PVZ failas.txt): "; cin >> pavadinimas;
@@ -237,7 +237,7 @@ void skaitytiMokinius(list<mokinys> &mokiniai, int &maxVardIlgis, int &maxPavard
 			if (esamas.pazym.size() < 2) {
 				throw std::logic_error("Mokinys turi tik viena pazymi, negalima nustatyti ar tai namu darbo pazymys ar egzamino pazymys. Klaida " + std::to_string(eilute) + "-oje eiluteje.");
 			}
-			esamas.egz = *--esamas.pazym.end();
+			esamas.egz = esamas.egz = esamas.pazym[esamas.pazym.size() - 1];
 			esamas.pazym.pop_back();
 			try {
 				esamas.skaiciuotiVidurki();
@@ -258,8 +258,8 @@ void skaitytiMokinius(list<mokinys> &mokiniai, int &maxVardIlgis, int &maxPavard
 	}
 }
 
-list<mokinys> atskirtiVarg(list<mokinys> &mokiniai, int kriterijus) {
-	list<mokinys> varg;
+vector<mokinys> atskirtiVarg(vector<mokinys> &mokiniai, int kriterijus) {
+	vector<mokinys> varg;
 	auto start = high_resolution_clock::now();
 	auto it = mokiniai.begin();
 	while (it != mokiniai.end()) {
@@ -319,15 +319,15 @@ bool rikPavard(mokinys& i, mokinys& j) {
 	return (i.pavarde < j.pavarde);
 }
 //Mokinių rikiavimo funkcija
-void rikiuotiMokinius(list<mokinys> &mokiniai, int pasirinkimas) {
+void rikiuotiMokinius(vector<mokinys> &mokiniai, int pasirinkimas) {
 	auto start = high_resolution_clock::now();
 	if (pasirinkimas == 1) {
 		//Rikiavimas pagal vardą
-		mokiniai.sort(rikVard);
+		std::sort(mokiniai.begin(), mokiniai.end(), rikVard);
 	}
 	else if (pasirinkimas == 2) {
 		//Rikiavimas pagal pavardę
-		mokiniai.sort(rikPavard);
+		std::sort(mokiniai.begin(), mokiniai.end(), rikPavard);
 	}
 	else {
 		//Klaida
@@ -342,7 +342,7 @@ void rikiuotiMokinius(list<mokinys> &mokiniai, int pasirinkimas) {
 //Pagrindinė apdorojimo funkcija
 void skaiciuotiRezultatus() {
 	try {
-		list<mokinys> mokiniai;
+		vector<mokinys> mokiniai;
 		int maxVardIlgis = 6, maxPavardIlgis = 7; //"vardas" - 6 simboliai//"pavarde" - 7 simboliai
 
 		cout << "REZULTATU SKAICIAVIMAS\n";
@@ -377,7 +377,7 @@ void skaiciuotiRezultatus() {
 				vardPavKrit = int_ivestis();
 			}
 			rikiuotiMokinius(mokiniai, vardPavKrit);
-			list<mokinys> vargs = atskirtiVarg(mokiniai, vardPavKrit);
+			vector<mokinys> vargs = atskirtiVarg(mokiniai, vardPavKrit);
 			cout << "Pasirinkite rezultatu isvedimo buda:\n1. Isvedimas konsoles lange (v0.2)\n2. Isvedimas i atskirus failus (v0.4)\n: ";
 			int isvedKrit = int_ivestis(); //Rezultatų išvedimo kriterijus. Galimi variantai : 1-2
 			while (isvedKrit != 1 && isvedKrit != 2) {

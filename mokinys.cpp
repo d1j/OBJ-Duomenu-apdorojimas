@@ -58,7 +58,7 @@ void mokinys::skaiciuotiMediana() {
 	int sk = pazym.size();
 	if (sk == 0) throw std::logic_error("Nera namu darbu pazymiu, apskaiciuoti medianos negalima. Mokinys: " + vardas + " " + pavarde);
 	//Prieš skaičiavimą išrikiuojame masyvo elementus didėjimo tvarka.
-	pazym.sort();
+	std::sort(pazym.begin(), pazym.end());
 	//Nustatome mediana
 	if (sk % 2 == 1) {
 		//Nelyginis skaičius pažymiu
