@@ -134,7 +134,7 @@ void ivestiMokinius(list<mokinys> &mokiniai, int rezimas, int &maxVardIlgis, int
 }
 
 //Funkcija atlieka v0.4 užduotį ir sudaro du mokinių sąrašus atskiruose failuose "./rezultatai" aplanke
-void isvestiMokinius(list<mokinys> &mokiniai, int maxVardIlgis, int maxPavardIlgis, int vardPavKrit) {
+void isvestiMokinius(list<mokinys> &vargs, list<mokinys> &kiet, int maxVardIlgis, int maxPavardIlgis, int vardPavKrit) {
 	bool pavPower = true;
 	std::string pavad;
 	while (pavPower) {
@@ -187,31 +187,14 @@ void isvestiMokinius(list<mokinys> &mokiniai, int maxVardIlgis, int maxPavardIlg
 	string linija(maxVardIlgis + maxPavardIlgis + 4, '-');
 	kietOut << linija << "----------------------------------\n";
 	vargOut << linija << "----------------------------------\n";
-	auto it = mokiniai.begin();
-	while (it != mokiniai.end()) {
-		mokinys esamas = *it;
-		if (rezKrit == 1) {
-			double rez = (0.4 * esamas.vidurkis) + (0.6 * esamas.egz);
-			//Išvedimas pagal vidurkį
-			if (arDoubleLygus(rez,  5.0) || rez > 5.0) {
-				//mokinys patenka į kietųjų sąrašą
-				esamas.isvestiInfo(kietOut, maxVardIlgis, maxPavardIlgis, vardPavKrit);
-			} else {
-				//mokinys patenka į vargšų sąrašą
-				esamas.isvestiInfo(vargOut, maxVardIlgis, maxPavardIlgis, vardPavKrit);
-			}
-		} else if (rezKrit == 2 ) {
-			//Išvedimas pagal medianą
-			double rez = (0.4 * esamas.mediana) + (0.6 * esamas.egz);
-			if (arDoubleLygus(rez, 5.0) || rez > 5.0)
-			{
-				//mokinys patenka į kietųjų sąrašą
-				esamas.isvestiInfo(kietOut, maxVardIlgis, maxPavardIlgis, vardPavKrit);
-			} else {
-				//mokinys patenka į vargšų sąrašą
-				esamas.isvestiInfo(vargOut, maxVardIlgis, maxPavardIlgis, vardPavKrit);
-			}
-		}
+	auto it = vargs.begin();
+	while (it != vargs.end()) {
+		it->isvestiInfo(vargOut, maxVardIlgis, maxPavardIlgis, vardPavKrit);
+		it++;
+	}
+	it = kiet.begin();
+	while (it != kiet.end()) {
+		it->isvestiInfo(kietOut, maxVardIlgis, maxPavardIlgis, vardPavKrit);
 		it++;
 	}
 	kietOut.close();
@@ -273,6 +256,32 @@ void skaitytiMokinius(list<mokinys> &mokiniai, int &maxVardIlgis, int &maxPavard
 		throw; //Erroras permetamas į funkciją kvietėją. Šiuo atvėju "skaiciuotiRezultatus()" funkciją.
 		//Ten bus sugautas tas pats erroras ir nebus vykdoma sekanti dalis kodo, einanti po įvykusios klaidos.
 	}
+}
+
+void rusiuotiMokinius(list<mokinys> &mokiniai, list<mokinys> &vargs, list<mokinys> &kiet, int rezimas) {
+	auto start = high_resolution_clock::now();
+	auto it = mokiniai.begin();
+	while (it != mokiniai.end()) {
+		if (rezimas == 1) {
+			if (arDoubleLygus(it->vidurkis * 0.4 + it->egz * 0.6, 5.0) || (it->vidurkis * 0.4 + it->egz * 0.6) > 5.0) {
+				kiet.push_back(*it);
+			} else {
+				vargs.push_back(*it);
+			}
+		} else if (rezimas == 2 ) {
+			if (arDoubleLygus(it->mediana * 0.4 + it->egz * 0.6, 5.0) || (it->mediana * 0.4 + it->egz * 0.6) > 5.0) {
+				kiet.push_back(*it);
+			} else {
+				vargs.push_back(*it);
+			}
+		} else {
+			break;
+		}
+		++it;
+	}
+	auto end = high_resolution_clock::now();
+	duration<double> diff = end - start;
+	cout << "\nMokiniai surusiuoti i du konteinerius per: \a" << diff.count() << "s.\n";
 }
 
 //Pagalbinė funkcija, nustatanti mokinio pirmenybę sąraše tarp dviejų mokinių pagal Vardą
@@ -364,6 +373,8 @@ void skaiciuotiRezultatus() {
 				vardPavKrit = int_ivestis();
 			}
 			rikiuotiMokinius(mokiniai, vardPavKrit);
+			list<mokinys> vargs, kiet;
+			rusiuotiMokinius(mokiniai, vargs, kiet, vardPavKrit);
 			cout << "Pasirinkite rezultatu isvedimo buda:\n1. Isvedimas konsoles lange (v0.2)\n2. Isvedimas i atskirus failus (v0.4)\n: ";
 			int isvedKrit = int_ivestis(); //Rezultatų išvedimo kriterijus. Galimi variantai : 1-2
 			while (isvedKrit != 1 && isvedKrit != 2) {
@@ -374,7 +385,7 @@ void skaiciuotiRezultatus() {
 				spausdintiMokinius(mokiniai, maxVardIlgis, maxPavardIlgis, vardPavKrit);
 
 			} else if (isvedKrit == 2) {
-				isvestiMokinius(mokiniai, maxVardIlgis, maxPavardIlgis, vardPavKrit);
+				isvestiMokinius(vargs, kiet, maxVardIlgis, maxPavardIlgis, vardPavKrit);
 			} else {
 				//Nenumatyta klaida
 				cout << "Nenumatyta klaida.\n";

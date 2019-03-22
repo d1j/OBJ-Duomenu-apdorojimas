@@ -43,5 +43,5 @@ int gen_reiksm(int intPrad, int intPab){
 
 bool arDoubleLygus(double dFirstVal, double dSecondVal)
 {
-	return std::fabs(dFirstVal - dSecondVal) < 1E-2;
+	return std::fabs(dFirstVal - dSecondVal) < 1E-3;
 }
