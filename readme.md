@@ -217,7 +217,7 @@ Trečioji strategija (mano pirminė strategija) yra releasinta v0.5 versijoje.
 ## **_Pastebėjimai_**
 * Supratau, kad norint atlikti kuo tikslesnį laiko matavimą, reikia pašalinti visus nereikalingus "background'o" procesus ir tuos pačius bandymus atlikti keletą kartų, išvestį rezultatų vidurkį. Tą supratęs perspėju, kad tiek praetų versijų rezultatai tiek tolimesni rezultatai gali būti iškraipyti "muzikos klausymosi naudojant chrome'ą" ir kitokių pašalinių veiklų. Tolimesnius bandymus stengiausi atlikti neapkraunant kompiuterio pašaliniais procesais.
 * Pasirinktas skaičius mokinių nėra idealus variantas testavimui, kadangi skirtingų testų metu laikai skyrėsi netgi 0.05 sekundės, kas yra ganėtinai daug ~1 sekundės atžvilgiu.
-* v0.5 versijos failo skaitymo laikas tarp `std::list` ir kitų konteinerių drastiškai skiriasi dėl kodo dalies, kur yra pasiekiamas paskutinis pažymių konteinerio narys tam, kad jo reikšmę prilygint egzamino pažymio reikšmei. 
+* Galutinis kodas turi dar daug trūkumų, toli gražu nėra tobulas. Vienas iš pavyzdžių, ką turiu galvoje:
 * ```c++
   //kodas, kurį naudojau su std::list konteineriais
   esamas.egz = *--esamas.pazym.end();
@@ -226,7 +226,7 @@ Trečioji strategija (mano pirminė strategija) yra releasinta v0.5 versijoje.
   //kodas, kurį reikėjo naudoti abiem atvėjais
   esamas.egz = esamas.pazym.back();
   ```
- * Išbandęs `std::list` kodą su `std::vector` konteineriais, pastebėjau, kad ir su `std::vector` duomenų įrašymas trunka tiek pat, kiek ir su `std::list`. Vadinasi tokiu būdu pasiekti paskutinį listo elementą - neefektyvu. Pagooglinau ir supratau, kad egzistuoja `back` metodas, kurį reikėjo naudoti abiem atvėjais. Tačiau grįžęs atgal ir patikrinęs šį metodą, pamačiau, kad failo skaitymo rezultatai nepakito, tad visgi kalta `std::list` atminties išdėstymo struktūra, dėl kurios norint pasiekti paskutinį elementą, reikia pereiti per visus list'o mazgus.
+ 
 
 ## **_Analizė_**
 
@@ -263,6 +263,14 @@ mokinių rikiavimas pagal VARDĄ
 rezultatų skaičiavimas pagal VIDURKĮ
 ```
 
-Išvados (iš pirmos lentelės duomenų):
+Išvados (iš pirmos duomenų lentelės):
 * `std::vector` ir `std::deque` visiškai nesutverti tam, kad iš jų būtų po vieną ištrinami elementai naudojant `erase` metodą.
-* supratau, kad failo skaitymo laikai drastiškai skiriasi tarp `std::list` ir kitų konteinerių dėl to, kad duomenų skaitymo metu programa iš karto skaičiuoja dalinius rezultatus (n.d. medianą ir vidurkį).
+* Failo skaitymo laikai drastiškai skiriasi tarp `std::list` ir kitų konteinerių, nes `std::list` kas kartą išskiria naują vietą atminty, kai pridedamas elementas, o pvz. `std::vector` tam tikrą kiekį atminties, kurį užpildžius, konteineris "resize'inamas" 1.5x karto. Atminties išskirimo operacija yra brangi, todėl į `std::vector`, rečiau naudodojantį šią operaciją, duomenys sutalpinami greičiau. 
+* be aukščiau minėto fakto, skaitymo laikui įtaką daro tas faktas, jog į šį laiką įeina dalinis rezultatų skaičiavimas, kurio metu apskaičiuojama n.d. mediana ir vidurkis. Be medianos ir vidurkio skaičiavimo skaitymas į `std::vector` vyksta ~1s, o į `std::list` ~1.28s. Iš to galime daugmaž pasakyti, kad rezultatų skaičiavimas naudojant `std::vector` trunka ~0.2s, o `std::list` - ~0.62s. `std::list` sunkumų kyla, kuomet skaičiuojama mediana, kadanagi praleidžiant vidurkio skaičiavimą ir paliekant tik medianos skaičiavimą, bendras laikas beveik nepakinta. Medianos skaičiavime problemos greičiausiai kyla dėl vidurinio elemento nustatymo, kadangi dėl `std::list` bruožų, programa turi pereiti nuo pirmo elemento konteineryje iki vidurinio (jeigu n.d. skaičius lyginis, tai šis procesas du kartus kartojamas), kuomet `std::vector` atminties išdėstymo struktūra leidžia greitai pasiekti norimus narius panaudojant `[]` "random access" operatorius.
+* Rikiavimo laikai skirtingose strategijose nesiskiria. Kodėl laikai skiriasi tarp skirtingų konteinerių, paaiškinta ankstesnės versijos analizėje. 
+* Skaidymas (mokinių rūšiavimas į vargšus ir kietus). Iš karto žvilgsnį patraukia antros strategijos `std::vector` ir `std::deque` laikai. Savaime aišku, kad skaidymas su šiais konteineriais trunka ilgai, kadanagi jie nepritaikyti šalinti elementus (esančius ne konteinerio išorėje) po vieną naudojant `erase` metodą. Ši problema buvo išspręsta panaudojant tam tkrus algoritmus (žiūrėti *2 lentelė*), apie kuriuos komentarai šiek tiek žemiau.
+* 3 strategijos skaidymas vyksta rezultatų išvedimo į failus metu, todėl atskirai laiko pamatuoti negalėjau. Tačiau iš bendro laiko matome, jog pirmos ir trečios strategijų laikai beveik nesiskiria. 3 strategija pranoksta 1 tuo, kad naudojama dvigubai mažiau atminties neskaidant mokinių į atskirus konteinerius, bet tiesiai į failus. 
+
+Išvados (iš antros duomenų lentelės):
+* Panaudoti `std::remove_if` bei `std::stable_partition` algortimai išgelbėjo programą su `std::vector` konteineriu ir parodė vienus geriausių rezultatų.
+* Matyti, jog skaidymas naudojant `std::stable_partition` trunka x1.7 karto ilgiau. Spėju, jog taip yra dėl to, kad `std::stable_partition` tvarkingai surūšiuoja elementus į dvi kategorijas (rūšiavimo metu vyksta elementų "swap'ai", kurių metu kuriama elemento kopija, ir dėl to programos veikimo laikas kenčia), o `std::remove_if` tiesiog sustumia į konteinerio priekį elementus, tenkinančius nurodytą kriterijų (vietoj trijų prilyginimo operacijų šiuo atvėju tereikia vienos prilyginimo operacijos), vėliau pradinis konteineris 
