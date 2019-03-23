@@ -20,8 +20,8 @@ Kadangi _readme.md_ ir _makefile_ v0.1 - v0.4 versijoms kūriau tas visas versij
 
 Kompiliuoti programą galima rankiniu būdu arba naudojant **make** komandas.
 
-`make v1` sukompiliuos programą, kuri veikia panaudojant C-tipo masyvus.
-`make v2` sukompiliuos programą, naudojančią `std::vector` konteinerius.
+`make v1` sukompiliuos programą (`v1.exe`), kuri veikia panaudojant C-tipo masyvus.
+`make v2` sukompiliuos programą (`v2.exe`), naudojančią `std::vector` konteinerius.
 
 Paleidus programą, atidžiai sekti programos nurodymus.
 
@@ -61,7 +61,7 @@ Duomenų failo formatas:
 
 ## **_Pastebėjimai_**
 
-Iš naudojimosi instrukcijų savaime aišku, jog duomenų skaitymas iš failo nėra nei patogus, nei lankstus, tačiau daugelį problemų išsprendžiau ir įvestį patobulinau vėlesnėse projekto versijose.
+Iš naudojimosi instrukcijų savaime aišku, jog duomenų skaitymas iš failo nėra nei patogus, nei lankstus, tačiau daugelį problemų išsprendžiau ir skaitymą patobulinau vėlesnėse projekto versijose.
 
 Šioje versijoje atsiranda galimybė rikiuoti mokinius pagal jų vardus arba pavardes.
 
@@ -110,7 +110,7 @@ Nuo šios versijos atsiranda galimybė ranka suvestus duomenis išsaugoti rezult
 - _main_v2.cpp_ pervadintas į _main.cpp_. Pasikeitė _main.cpp_ struktūra;
 - nuo šiol `make` kompiliuoja failą pavadinimu _main.exe_;
 - _funkcijos.h_ faile aprašomos bendros funkcijos (įvesties, skaičių generavimo, failų egzistavimo tikrinimo ir t.t.), naudojamos visuose failuose.
-- _apdorojimas.cpp_ faile randasi didžioji dalis funkcijų, skirtų mokinių rezultatų apdorojimui (Kai kurios skaičiavimo funkcijos yra struktūros `mokinys` metodai, saugomi *mokinys.cpp* faile)
+- _apdorojimas.cpp_ faile randasi didžioji dalis funkcijų, skirtų mokinių rezultatų apdorojimui (Kai kurios rezultatų skaičiavimo funkcijos yra struktūros `mokinys` metodai, saugomi *mokinys.cpp* faile)
 - _generavimas.h_ aprašyta funkcija, kurios pagalba galime sugeneruoti duomenų failus.
 - pamiršau padaryt galimybę vartotojui nurodyti, kiek daugiausia pažymių mokinys gali turėti (defaultinės reikšmės: min-1; max-20).
 
@@ -186,11 +186,11 @@ Rezultatai po klaidos ištaisymo:
 | Konteinerio tipas | Failo skaitymas | Rikiavimas | Išvedimas (į failus) | Viso      |
 | ----------------- | --------------- | ---------- | -------------------- | --------- |
 | std::vector       | 1.15691s        | 0.622723s  | 1.33029s             | 3.109923s |
-| std::deque        | 1.11233ss       | 0.798517s  | 1.39263s             | 3.303477s |
+| std::deque        | 1.11233s        | 0.798517s  | 1.39263s             | 3.303477s |
 | std::list         | 1.99002s        | 0.218764s  | 1.6116s              | 3.820384s |
 
 Išvados: 
-* Mano programos veikimo atžvilgiu naudingiausia naudoti `std::vector` konteinerį, kadangi šis konteineris stipriai pranoksta `std::list`, kuomet duomenys po vieną pridedami į konteinerio galą (failo skaitymas) arba yra vienas po kito pasiekiami (iteruojami) ir naudojami (išvedimas į failus, rezultatų skaičiavimas). Panašius rezultatus šioj srity parodo `std::deque`, tačiau `std::vector` pastarąjį pranoksta rikiavime, kuris trunka mažiau greičiausia dėl konteinerio adresų paskyrimo. Kiek supratau, `std::vector` konteineris paskiria vieną nuoseklų gabalą atminties RAM'e, o `std::deque` paskiria atmintį atskirais gabalais, kurie gali būti išmėtyti po atmintį skirtingose vietose. Todėl rikiuojant greičiau nustatoma `std::vector` elemento vieta atminty, negu `std::deque`
+* Mano programos veikimo atžvilgiu naudingiausia naudoti `std::vector` konteinerį, kadangi šis konteineris stipriai pranoksta `std::list`, kuomet duomenys po vieną pridedami į konteinerio galą (failo skaitymas) arba yra vienas po kito pasiekiami (iteruojami) ir naudojami (išvedimas į failus, rezultatų skaičiavimas). Panašius rezultatus šioj srity parodo `std::deque`, tačiau `std::vector` pastarąjį pranoksta rikiavime, kuris trunka mažiau greičiausia dėl konteinerio adresų paskyrimo. Kiek supratau, `std::vector` konteineris paskiria vieną nuoseklų gabalą atminties RAM'e, o `std::deque` paskiria atmintį atskirais gabalais, kurie gali būti išmėtyti po atmintį skirtingose vietose. Todėl rikiuojant ko gero greičiau nustatoma `std::vector` elemento vieta atminty, negu `std::deque`
 * Nors ir `std::list` vienareikšmiškai greičiausias duomenų rikiavime, jo naudoti neapsimoka, nes duomenys turi kažkaip atsidurt konteineryje, o matyti, jog `std::list` nėra geriausias sprendimas tą padaryti.
 * `std::list` pranoksta kitus konteinerius rikiavime, dėl to, kad adresų išdėstymo struktūra kardinaliai skiriasi: `std::list` dažniausiai implementuojamas kaip *doubly-linked list'as*, todėl elementai yra išmėtyti po atmintį ir yra tarpusavy susieti nuorodomis į gretimų elementų adresus. Šis skirtumas leidžia elementus apkeisti pakeičiant adresų sąsajas, o `std::vector` ir `std::deque` reikia perkopijuoti visą elementų informaciją, nes keisti adresų negalime dėl griežtos konteinerių struktūros.
 
@@ -201,14 +201,20 @@ Išvados:
 ---
 ## **_Naudojimosi instrukcijos_**
 
-Man atrodo, kad kurti ir vėliau peržiūrėti atskirus 6 releasus bus nepatogu ir painu, todėl jų nekursiu.
+**PASTABA! Kadangi ši versija skirta analizuoti skirtingus konteinerius ir jų naudojimosi įpatumus, programą perdarinėjau skirtingoms strategijoms tik tiek, kad būtų galimą atlikti testus ir palyginti rezultatus. Tai reiškia, kad rezultatų v0.2 išvedimas į konsolės langą neveiks tinkamai.**
 
-Pirmos strategijos kodą galima peržiūrėti klonuojant repozitoriją ir nuėjus į "branch'ą" pavadinimu `v1.0_1strat`. Jame nueiti į "commit'ų log'ą" ir atitinkamai susirasti norimą "commit'ą" pagal komentarus. Šiame "branch'e" "commit'inau" tokia eilės tvarka: kodas su `std::list` -> kodas su `std::vector` -> kodas su `std::deque`
+Man atrodo, kad kurti ir analizuoti atskirus šios versijos releasus bus nepatogu ir painu, todėl jų nekursiu.
 
-Antros strategijos kodą taip pat galima peržiūrėti klonuojant repozitoriją ir nuėjus į "branch'ą" pavadinimu `v1.0_2strat`. Jame nueiti į "commit'ų "log'ą" ir atitinkamai susirasti norimą "commit'ą" pagal komentarus. Šiame "branch'e" "commit'inau" tokia eilės tvarka: kodas su `std::list` -> kodas su `std::vector` -> kodas su `std::deque`
+Pirmos strategijos kodą galima peržiūrėti klonuojant repozitoriją ir nuėjus į "branch'ą" [v1.0_1strat](https://github.com/d1j/OBJ-Duomenu-apdorojimas/tree/v1.0_1strat). Jame nueiti į "commit'ų log'ą" ir atitinkamai susirasti norimą "commit'ą" pagal komentarus. Šiame "branch'e" "commit'inau" tokia eilės tvarka: kodas su `std::list` -> kodas su `std::vector` -> kodas su `std::deque`
+
+Antros strategijos kodą taip pat galima peržiūrėti klonuojant repozitoriją ir nuėjus į "branch'ą" [v1.0_2strat](https://github.com/d1j/OBJ-Duomenu-apdorojimas/tree/v1.0_2strat). Jame nueiti į "commit'ų "log'ą" ir atitinkamai susirasti norimą "commit'ą" pagal komentarus. Šiame "branch'e" "commit'inau" tokia eilės tvarka: kodas su `std::list` -> kodas su `std::vector` -> kodas su `std::deque`
+
+Kodą su pritaikytais `std` algoritmais galima rasti "branch'e" [v1.0_2strat_vector](https://github.com/d1j/OBJ-Duomenu-apdorojimas/tree/v1.0_2strat_vector)
+
+Trečioji strategija (mano pirminė strategija) yra releasinta v0.5 versijoje.
 
 ## **_Pastebėjimai_**
-* Supratau, kad norint atlikti kuo tikslesnį laiko matavimą, reikia pašalinti visus nereikalingus "background'o" procesus ir tuos pačius bandymus atlikti keletą kartų, išvestį rezultatų vidurkį. Tą supratęs perspėju, kad tiek praetų versijų rezultatai tiek tolimesni rezultatai gali būti iškraipyti "muzikos klausymosi naudojantis youtube" ir kitokių pašalinių veiklų. Tolimesnius bandymus stengiausi atlikti neapkraunant kompiuterio pašaliniais procesais.
+* Supratau, kad norint atlikti kuo tikslesnį laiko matavimą, reikia pašalinti visus nereikalingus "background'o" procesus ir tuos pačius bandymus atlikti keletą kartų, išvestį rezultatų vidurkį. Tą supratęs perspėju, kad tiek praetų versijų rezultatai tiek tolimesni rezultatai gali būti iškraipyti "muzikos klausymosi naudojant chrome'ą" ir kitokių pašalinių veiklų. Tolimesnius bandymus stengiausi atlikti neapkraunant kompiuterio pašaliniais procesais.
 * v0.5 versijos failo skaitymo laikas tarp `std::list` ir kitų konteinerių drastiškai skiriasi dėl kodo dalies, kur yra pasiekiamas paskutinis pažymių konteinerio narys tam, kad jo reikšmę prilygint egzamino pažymio reikšmei. 
 * ```c++
   //kodas, kurį naudojau su std::list konteineriais
@@ -218,4 +224,24 @@ Antros strategijos kodą taip pat galima peržiūrėti klonuojant repozitoriją 
   //kodas, kurį reikėjo naudoti abiem atvėjais
   esamas.egz = esamas.pazym.back();
   ```
- * Išbandęs `std::list` kodą su `std::vector` konteineriais, pastebėjau, kad ir su `std::vector` duomenų įrašymas trunka tiek pat, kiek ir su `std::list`. Vadinasi tokiu būdu pasiekti paskutinį listo elementą - neefektyvu. Pagooglinau ir supratau,kad egzistuoja `list::back` metodas, kurį veikiausiai reikėjo naudoti abiem atvėjais. Tačiau grįžęs atgal ir patikrinęs šį metodą, pamačiau, kad failo skaitymo rezultatai beveik niekuo nesiskiria, tad visgi kalta `std::list` atminties struktūra, dėl kurios norint pasiekti paskutinį elementą, reikia pereiti per visus list'o mazgus.
+ * Išbandęs `std::list` kodą su `std::vector` konteineriais, pastebėjau, kad ir su `std::vector` duomenų įrašymas trunka tiek pat, kiek ir su `std::list`. Vadinasi tokiu būdu pasiekti paskutinį listo elementą - neefektyvu. Pagooglinau ir supratau,kad egzistuoja `list::back` metodas, kurį reikėjo naudoti abiem atvėjais. Tačiau grįžęs atgal ir patikrinęs šį metodą, pamačiau, kad failo skaitymo rezultatai niekuo nesiskiria, tad visgi kalta `std::list` atminties išdėstymo struktūra, dėl kurios norint pasiekti paskutinį elementą, reikia pereiti per visus list'o mazgus.
+
+## **_Analizė_**
+
+| Konteinerio tipas | 1 strategija | 2 strategija     |
+| ----------------- | ------------ | ---------------- |
+| std::vector       | 0.103649s    | Labai daug laiko |
+| std::deque        | 0.164872s    | 753.149s         |
+| std::list         | 0.359681s    | 0.19816s         |
+
+| Konteinerio tipas  | Failo skaitymas | Rikiavimas | Skaidymas        | Išvedimas (į failus) | Viso        |
+| ------------------ | --------------- | ---------- | ---------------- | -------------------- | ----------- |
+| std::vector 1strat | 1.2031s         | 0.619839s  | 0.103649s        | 1.21908s             | 3.145668s   |
+| std::deque  1strat | 1.10927s        | 0.809517s  | 0.164872s        | 1.21884s             | 3.302499s   |
+| std::list   1strat | 1.98458s        | 0.202761s  | 0.202761s        | 1.19818s             | 3.588282s   |
+| std::vector 2strat | 1.21868s        | 0.609515s  | Labai daug laiko | -                    | -           |
+| std::deque  2strat | 1.34371s        | 0.745927s  | 753.149s         | 1.22574s             | 756.464377s |
+| std::list   2strat | 1.98455s        | 0.20281s   | 0.19816s         | 1.21835s             | 3.60387s    |
+| std::vector 3strat | 1.15691s        | 0.622723s  | -                | 1.33029s             | 3.109923s   |
+| std::deque  3strat | 1.11233s        | 0.798517s  | -                | 1.39263s             | 3.303477s   |
+| std::list   3strat | 1.99002s        | 0.218764s  | -                | 1.6116s              | 3.820384s   |
