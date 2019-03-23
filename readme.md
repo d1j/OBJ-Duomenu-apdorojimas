@@ -216,4 +216,4 @@ Antros strategijos kodą taip pat galima peržiūrėti klonuojant repozitoriją 
   //kodas, kurį naudojau su std::vector konteineriais
   esamas.egz = esamas.pazym[esamas.pazym.size() - 1];
   ```
- * Išbandęs `std::list` kodą su `std::vector` konteineriais, pastebėjau, kad ir su `std::vector` duomenų įrašymas trunka tiek pat, kiek ir su `std::list`. Vadinasi tokiu būdu pasiekti paskutinį listo elementą - neefektyvu. Pagooglinau ir supratau, kad egzistuoja list::back metodas, kurį ir reikįjo naudoti šiuo atvėju
+ * Išbandęs `std::list` kodą su `std::vector` konteineriais, pastebėjau, kad ir su `std::vector` duomenų įrašymas trunka tiek pat, kiek ir su `std::list`. Vadinasi tokiu būdu pasiekti paskutinį listo elementą - neefektyvu. Pagooglinau ir supratau,kad egzistuoja list::back metodas, kurį veikiausiai reikėjo naudoti šiuo atvėju. Tačiau grįžęs atgal ir patikrinęs šį metodą, pamačiau, kad failo skaitymo rezultatai beveik niekuo nesiskiria, tad visgi kalta `std::list` atminties struktūra, dėl kurios norint pasiekti paskutinį elementą, reikia pereiti per visus list'o mazgus.
