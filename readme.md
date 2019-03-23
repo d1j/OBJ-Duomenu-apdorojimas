@@ -12,7 +12,7 @@ Kadangi _readme.md_ ir _makefile_ v0.1 - v0.4 versijoms kūriau tas visas versij
 
 ---
 
-# v0.1
+# [v0.1](https://github.com/d1j/OBJ-Duomenu-apdorojimas/releases/tag/v0.1)
 
 ---
 
@@ -33,7 +33,7 @@ _main_v2.cpp_ faile duomenims saugoti panaudoti vien tik `std::vector` konteiner
 
 ---
 
-# v0.2
+# [v0.2](https://github.com/d1j/OBJ-Duomenu-apdorojimas/releases/tag/v0.2)
 
 ---
 
@@ -67,7 +67,7 @@ Iš naudojimosi instrukcijų savaime aišku, jog duomenų skaitymas iš failo n�
 
 ---
 
-# v0.3
+# [v0.3](https://github.com/d1j/OBJ-Duomenu-apdorojimas/releases/tag/v0.3)
 
 ---
 
@@ -87,7 +87,7 @@ Patobulintas _makefile_ pagal "tutorialą" [šioje svetainėje](http://www.cs.co
 
 ---
 
-# v0.4
+# [v0.4](https://github.com/d1j/OBJ-Duomenu-apdorojimas/releases/tag/v0.4)
 
 ---
 
@@ -151,7 +151,7 @@ Padaręs v0.4 versiją, iššakojau projektą į 3 papildomas šakas:
 *  `v0.5/v1.0list` šakoje įgyvendinta su `std::list` konteineriais,
 *  `v0.5/v1.0deque` šakoje projektas įgyvenditas su `std::deque` konteineriais
 
-`v0.5/v1.0vector` ir `v0.5/v1.0deque` kodas skiriasi tik tuo, kad visur *vector* buvo pakeista į *deque*, tad projektą releasinsiu tik su `std::vector` ir `std::list` konteineriais.
+`v0.5/v1.0vector` ir `v0.5/v1.0deque` kodas skiriasi tik tuo, kad visur *vector* buvo pakeista į *deque*, tad projektą releasinsiu tik su [std::vector](https://github.com/d1j/OBJ-Duomenu-apdorojimas/releases/tag/v0.5vec) ir [std::list](https://github.com/d1j/OBJ-Duomenu-apdorojimas/releases/tag/v0.5list) konteineriais.
 
 Iš esmės programos funkcionalumas ir naudojimosi taisyklės nepakito, tad, kaip naudotis, žiūrėti į v0.4 ir ankstesnių versijų naudojimosi aprašus.
 
@@ -273,4 +273,4 @@ Išvados (iš pirmos duomenų lentelės):
 
 Išvados (iš antros duomenų lentelės):
 * Panaudoti `std::remove_if` bei `std::stable_partition` algortimai išgelbėjo programą su `std::vector` konteineriu ir parodė vienus geriausių rezultatų.
-* Matyti, jog skaidymas naudojant `std::stable_partition` trunka x1.7 karto ilgiau. Spėju, jog taip yra dėl to, kad `std::stable_partition` tvarkingai surūšiuoja elementus į dvi kategorijas (rūšiavimo metu vyksta elementų "swap'ai", kurių metu kuriama elemento kopija, ir dėl to programos veikimo laikas kenčia), o `std::remove_if` tiesiog sustumia į konteinerio priekį elementus, tenkinančius nurodytą kriterijų (vietoj trijų prilyginimo operacijų šiuo atvėju tereikia vienos prilyginimo operacijos), vėliau pradinis konteineris 
+* Matyti, jog skaidymas naudojant `std::stable_partition` trunka x1.7 karto ilgiau. Spėju, jog taip yra dėl to, kad `std::stable_partition` tvarkingai surūšiuoja elementus į dvi kategorijas (rūšiavimo metu vyksta elementų "swap'ai", kurių metu kuriama elemento kopija, ir dėl to programos veikimo laikas kenčia), o `std::remove_if` tiesiog sustumia į konteinerio priekį elementus, tenkinančius nurodytą kriterijų (vietoj trijų prilyginimo operacijų ("swap'inant" elementus) tokiu atvėju tereikia vienos prilyginimo operacijos).
