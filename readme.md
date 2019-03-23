@@ -175,6 +175,7 @@ Testai atlikti su tokiais parametrais:
 #define max_paz_sk 20
 ```
 ```
+mokinių skaičius 100 000
 mokinių rikiavimas pagal VARDĄ
 rezultatų skaičiavimas pagal VIDURKĮ
 ```
@@ -215,6 +216,7 @@ Trečioji strategija (mano pirminė strategija) yra releasinta v0.5 versijoje.
 
 ## **_Pastebėjimai_**
 * Supratau, kad norint atlikti kuo tikslesnį laiko matavimą, reikia pašalinti visus nereikalingus "background'o" procesus ir tuos pačius bandymus atlikti keletą kartų, išvestį rezultatų vidurkį. Tą supratęs perspėju, kad tiek praetų versijų rezultatai tiek tolimesni rezultatai gali būti iškraipyti "muzikos klausymosi naudojant chrome'ą" ir kitokių pašalinių veiklų. Tolimesnius bandymus stengiausi atlikti neapkraunant kompiuterio pašaliniais procesais.
+* Pasirinktas skaičius mokinių nėra idealus variantas testavimui, kadangi skirtingų testų metu laikai skyrėsi netgi 0.05 sekundės, kas yra ganėtinai daug ~1 sekundės atžvilgiu.
 * v0.5 versijos failo skaitymo laikas tarp `std::list` ir kitų konteinerių drastiškai skiriasi dėl kodo dalies, kur yra pasiekiamas paskutinis pažymių konteinerio narys tam, kad jo reikšmę prilygint egzamino pažymio reikšmei. 
 * ```c++
   //kodas, kurį naudojau su std::list konteineriais
@@ -224,24 +226,43 @@ Trečioji strategija (mano pirminė strategija) yra releasinta v0.5 versijoje.
   //kodas, kurį reikėjo naudoti abiem atvėjais
   esamas.egz = esamas.pazym.back();
   ```
- * Išbandęs `std::list` kodą su `std::vector` konteineriais, pastebėjau, kad ir su `std::vector` duomenų įrašymas trunka tiek pat, kiek ir su `std::list`. Vadinasi tokiu būdu pasiekti paskutinį listo elementą - neefektyvu. Pagooglinau ir supratau,kad egzistuoja `list::back` metodas, kurį reikėjo naudoti abiem atvėjais. Tačiau grįžęs atgal ir patikrinęs šį metodą, pamačiau, kad failo skaitymo rezultatai niekuo nesiskiria, tad visgi kalta `std::list` atminties išdėstymo struktūra, dėl kurios norint pasiekti paskutinį elementą, reikia pereiti per visus list'o mazgus.
+ * Išbandęs `std::list` kodą su `std::vector` konteineriais, pastebėjau, kad ir su `std::vector` duomenų įrašymas trunka tiek pat, kiek ir su `std::list`. Vadinasi tokiu būdu pasiekti paskutinį listo elementą - neefektyvu. Pagooglinau ir supratau, kad egzistuoja `back` metodas, kurį reikėjo naudoti abiem atvėjais. Tačiau grįžęs atgal ir patikrinęs šį metodą, pamačiau, kad failo skaitymo rezultatai nepakito, tad visgi kalta `std::list` atminties išdėstymo struktūra, dėl kurios norint pasiekti paskutinį elementą, reikia pereiti per visus list'o mazgus.
 
 ## **_Analizė_**
 
-| Konteinerio tipas | 1 strategija | 2 strategija     |
-| ----------------- | ------------ | ---------------- |
-| std::vector       | 0.103649s    | Labai daug laiko |
-| std::deque        | 0.164872s    | 753.149s         |
-| std::list         | 0.359681s    | 0.19816s         |
+| Konteinerio tipas    | Failo skaitymas | Rikiavimas | Skaidymas        | Išvedimas (į failus) | Viso        |
+| -------------------- | --------------- | ---------- | ---------------- | -------------------- | ----------- |
+| std::vector 1 strat. | 1.2031s         | 0.619839s  | 0.103649s        | 1.21908s             | 3.145668s   |
+| std::deque  1 strat  | 1.10927s        | 0.809517s  | 0.164872s        | 1.21884s             | 3.302499s   |
+| std::list   1 strat  | 1.98458s        | 0.202761s  | 0.359681s        | 1.19818s             | 3.745202s   |
+| std::vector 2 strat  | 1.21868s        | 0.609515s  | Labai daug laiko | -                    | -           |
+| std::deque  2 strat  | 1.34371s        | 0.745927s  | 753.149s         | 1.22574s             | 756.464377s |
+| std::list   2 strat  | 1.98455s        | 0.20281s   | 0.19816s         | 1.21835s             | 3.60387s    |
+| std::vector 3 strat  | 1.15691s        | 0.622723s  | -                | 1.33029s             | 3.109923s   |
+| std::deque  3 strat  | 1.11233s        | 0.798517s  | -                | 1.39263s             | 3.303477s   |
+| std::list   3 strat  | 1.99002s        | 0.218764s  | -                | 1.6116s              | 3.820384s   |
+*1 lentelė*
 
-| Konteinerio tipas  | Failo skaitymas | Rikiavimas | Skaidymas        | Išvedimas (į failus) | Viso        |
-| ------------------ | --------------- | ---------- | ---------------- | -------------------- | ----------- |
-| std::vector 1strat | 1.2031s         | 0.619839s  | 0.103649s        | 1.21908s             | 3.145668s   |
-| std::deque  1strat | 1.10927s        | 0.809517s  | 0.164872s        | 1.21884s             | 3.302499s   |
-| std::list   1strat | 1.98458s        | 0.202761s  | 0.202761s        | 1.19818s             | 3.588282s   |
-| std::vector 2strat | 1.21868s        | 0.609515s  | Labai daug laiko | -                    | -           |
-| std::deque  2strat | 1.34371s        | 0.745927s  | 753.149s         | 1.22574s             | 756.464377s |
-| std::list   2strat | 1.98455s        | 0.20281s   | 0.19816s         | 1.21835s             | 3.60387s    |
-| std::vector 3strat | 1.15691s        | 0.622723s  | -                | 1.33029s             | 3.109923s   |
-| std::deque  3strat | 1.11233s        | 0.798517s  | -                | 1.39263s             | 3.303477s   |
-| std::list   3strat | 1.99002s        | 0.218764s  | -                | 1.6116s              | 3.820384s   |
+
+| Konteinerio tipas                    | Failo skaitymas | Rikiavimas | Skaidymas        | Išvedimas (į failus) | Viso      |
+| ------------------------------------ | --------------- | ---------- | ---------------- | -------------------- | --------- |
+| std::vector 2 strat                  | 1.21868s        | 0.609515s  | Labai daug laiko | -                    | -         |
+| std::vector 2 strat remove_if        | 1.17172s        | 0.60912s   | 0.107287s        | 1.23445s             | 3.122577s |
+| std::vector 2 strat stable_partition | 1.18785s        | 0.605679s  | 0.173682s        | 1.18793s             | 3.155141s |
+*2 lentelė*
+
+
+Testai atlikti su tokiais parametrais: 
+```c++
+#define min_paz_sk 1
+#define max_paz_sk 20
+```
+```
+mokinių skaičius 100 000
+mokinių rikiavimas pagal VARDĄ
+rezultatų skaičiavimas pagal VIDURKĮ
+```
+
+Išvados (iš pirmos lentelės duomenų):
+* `std::vector` ir `std::deque` visiškai nesutverti tam, kad iš jų būtų po vieną ištrinami elementai naudojant `erase` metodą.
+* supratau, kad failo skaitymo laikai drastiškai skiriasi tarp `std::list` ir kitų konteinerių dėl to, kad duomenų skaitymo metu programa iš karto skaičiuoja dalinius rezultatus (n.d. medianą ir vidurkį).
