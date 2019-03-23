@@ -258,29 +258,44 @@ void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPava
 	}
 }
 
+bool arGavoSkolaVid(mokinys &a) {
+	if ((a.vidurkis * 0.4 + a.egz * 0.6) < 5.0 ) {
+		return true;
+	} return false;
+}
+bool arGavoSkolaMed(mokinys &a) {
+	if ((a.mediana * 0.4 + a.egz * 0.6) < 5.0 ) {
+		return true;
+	} return false;
+}
 vector<mokinys> atskirtiVarg(vector<mokinys> &mokiniai, int kriterijus) {
 	vector<mokinys> varg;
 	auto start = high_resolution_clock::now();
 	auto it = mokiniai.begin();
 	while (it != mokiniai.end()) {
 		if (kriterijus == 1 ) {
-			if ((it->vidurkis * 0.4 + it->egz * 0.6) < 5.0 ) {
+			if ((it->vidurkis * 0.4 + it->egz * 0.6) < 5.0 && !arDoubleLygus(it->vidurkis * 0.4 + it->egz * 0.6, 5.0)) {
 				varg.push_back(*it);
-				it = mokiniai.erase(it);
-			} else {
-				it++;
 			}
+			it++;
 		} else if (kriterijus == 2 ) {
-			if ((it->mediana * 0.4 + it->egz * 0.6) < 5.0 ) {
+			if ((it->mediana * 0.4 + it->egz * 0.6) < 5.0 && !arDoubleLygus(it->vidurkis * 0.4 + it->egz * 0.6, 5.0)) {
 				varg.push_back(*it);
-				it = mokiniai.erase(it);
-			} else {
-				it++;
 			}
+			it++;
 		} else {
 			break;
 		}
 	}
+
+	if (kriterijus == 1 ) {
+		it = std::remove_if(mokiniai.begin(), mokiniai.end(), arGavoSkolaVid);
+	} else if (kriterijus == 2) {
+		it = std::remove_if(mokiniai.begin(), mokiniai.end(), arGavoSkolaMed);
+	}
+
+	mokiniai.erase(it, mokiniai.end());
+	mokiniai.shrink_to_fit();
 
 	auto end = high_resolution_clock::now();
 	duration<double> diff = end - start;
