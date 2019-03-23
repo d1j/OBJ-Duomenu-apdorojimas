@@ -203,9 +203,9 @@ Išvados:
 
 Man atrodo, kad kurti ir vėliau peržiūrėti atskirus 6 releasus bus nepatogu ir painu, todėl jų nekursiu.
 
-Pirmos strategijos kodą galima peržiūrėti klonuojant repozitoriją ir nuėjus į "branch'ą" pavadinimu `v1.0_1strat`. Jame nueiti į commitų "log'ą" ir atitinkamai susirasti norimą commitą pagal komentarus. Šiame "branch'e" "commit'inau" tokia eilės tvarka: kodas su std::list -> kodas su std::vector -> kodas su std::deque
+Pirmos strategijos kodą galima peržiūrėti klonuojant repozitoriją ir nuėjus į "branch'ą" pavadinimu `v1.0_1strat`. Jame nueiti į "commit'ų log'ą" ir atitinkamai susirasti norimą "commit'ą" pagal komentarus. Šiame "branch'e" "commit'inau" tokia eilės tvarka: kodas su `std::list` -> kodas su `std::vector` -> kodas su `std::deque`
 
-Antros strategijos kodą taip pat galima peržiūrėti klonuojant repozitoriją ir nuėjus į "branch'ą" pavadinimu `v1.0_2strat`. Jame nueiti į commitų "log'ą" ir atitinkamai susirasti norimą commitą pagal komentarus. Šiame "branch'e" "commit'inau" tokia eilės tvarka: kodas su std::list -> kodas su std::vector -> kodas su std::deque
+Antros strategijos kodą taip pat galima peržiūrėti klonuojant repozitoriją ir nuėjus į "branch'ą" pavadinimu `v1.0_2strat`. Jame nueiti į "commit'ų "log'ą" ir atitinkamai susirasti norimą "commit'ą" pagal komentarus. Šiame "branch'e" "commit'inau" tokia eilės tvarka: kodas su `std::list` -> kodas su `std::vector` -> kodas su `std::deque`
 
 ## **_Pastebėjimai_**
 * Supratau, kad norint atlikti kuo tikslesnį laiko matavimą, reikia pašalinti visus nereikalingus "background'o" procesus ir tuos pačius bandymus atlikti keletą kartų, išvestį rezultatų vidurkį. Tą supratęs perspėju, kad tiek praetų versijų rezultatai tiek tolimesni rezultatai gali būti iškraipyti "muzikos klausymosi naudojantis youtube" ir kitokių pašalinių veiklų. Tolimesnius bandymus stengiausi atlikti neapkraunant kompiuterio pašaliniais procesais.
@@ -215,5 +215,7 @@ Antros strategijos kodą taip pat galima peržiūrėti klonuojant repozitoriją 
   esamas.egz = *--esamas.pazym.end();
   //kodas, kurį naudojau su std::vector konteineriais
   esamas.egz = esamas.pazym[esamas.pazym.size() - 1];
+  //kodas, kurį reikėjo naudoti abiem atvėjais
+  esamas.egz = esamas.pazym.back();
   ```
- * Išbandęs `std::list` kodą su `std::vector` konteineriais, pastebėjau, kad ir su `std::vector` duomenų įrašymas trunka tiek pat, kiek ir su `std::list`. Vadinasi tokiu būdu pasiekti paskutinį listo elementą - neefektyvu. Pagooglinau ir supratau,kad egzistuoja list::back metodas, kurį veikiausiai reikėjo naudoti šiuo atvėju. Tačiau grįžęs atgal ir patikrinęs šį metodą, pamačiau, kad failo skaitymo rezultatai beveik niekuo nesiskiria, tad visgi kalta `std::list` atminties struktūra, dėl kurios norint pasiekti paskutinį elementą, reikia pereiti per visus list'o mazgus.
+ * Išbandęs `std::list` kodą su `std::vector` konteineriais, pastebėjau, kad ir su `std::vector` duomenų įrašymas trunka tiek pat, kiek ir su `std::list`. Vadinasi tokiu būdu pasiekti paskutinį listo elementą - neefektyvu. Pagooglinau ir supratau,kad egzistuoja `list::back` metodas, kurį veikiausiai reikėjo naudoti abiem atvėjais. Tačiau grįžęs atgal ir patikrinęs šį metodą, pamačiau, kad failo skaitymo rezultatai beveik niekuo nesiskiria, tad visgi kalta `std::list` atminties struktūra, dėl kurios norint pasiekti paskutinį elementą, reikia pereiti per visus list'o mazgus.
