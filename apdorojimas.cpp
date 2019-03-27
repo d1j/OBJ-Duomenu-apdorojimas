@@ -134,7 +134,7 @@ void ivestiMokinius(vector<mokinys> &mokiniai, int rezimas, int &maxVardIlgis, i
 }
 
 //Funkcija atlieka v0.4 užduotį ir sudaro du mokinių sąrašus atskiruose failuose "./rezultatai" aplanke
-void isvestiMokinius(vector<mokinys> &varg, vector<mokinys> &kiet, int maxVardIlgis, int maxPavardIlgis, int vardPavKrit) {
+void isvestiMokinius(vector<mokinys> &varg, vector<mokinys> &kiet, int maxVardIlgis, int maxPavardIlgis, int vardPavKrit, int rezKrit) {
 	bool pavPower = true;
 	std::string pavad;
 	while (pavPower) {
@@ -160,12 +160,6 @@ void isvestiMokinius(vector<mokinys> &varg, vector<mokinys> &kiet, int maxVardIl
 			//Failas neegzistuoja, galima kurti nauja faila
 			pavPower = false;
 		}
-	}
-	cout << "Pagal ka norite skaiciuoti rezultatus?\n1. Vidurki\n2. Mediana\n: ";
-	int rezKrit = int_ivestis();
-	while (rezKrit != 1 && rezKrit != 2) {
-		cout << "Negalima reiksme. Iveskite reiksme is naujo: ";
-		rezKrit = int_ivestis();
 	}
 
 	auto start = high_resolution_clock::now();
@@ -237,7 +231,7 @@ void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPava
 			if (esamas.pazym.size() < 2) {
 				throw std::logic_error("Mokinys turi tik viena pazymi, negalima nustatyti ar tai namu darbo pazymys ar egzamino pazymys. Klaida " + std::to_string(eilute) + "-oje eiluteje.");
 			}
-			esamas.egz = esamas.egz = esamas.pazym[esamas.pazym.size() - 1];
+			esamas.egz = esamas.pazym.back();
 			esamas.pazym.pop_back();
 			try {
 				esamas.skaiciuotiVidurki();
@@ -258,24 +252,24 @@ void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPava
 	}
 }
 
-bool arGavoSkolaVid(mokinys &a) {
+bool arKietVid(mokinys &a) {
 	if ((a.vidurkis * 0.4 + a.egz * 0.6) < 5.0 && !arDoubleLygus(a.vidurkis * 0.4 + a.egz * 0.6, 5.0)) {
-		return true;
-	} return false;
+		return false;
+	} return true;
 }
-bool arGavoSkolaMed(mokinys &a) {
+bool arKietMed(mokinys &a) {
 	if ((a.mediana * 0.4 + a.egz * 0.6) < 5.0 && !arDoubleLygus(a.vidurkis * 0.4 + a.egz * 0.6, 5.0)) {
-		return true;
-	} return false;
+		return false;
+	} return true;
 }
 vector<mokinys> atskirtiVarg(vector<mokinys> &mokiniai, int kriterijus) {
 	auto start = high_resolution_clock::now();
 	vector<mokinys>::iterator it;
 
 	if (kriterijus == 1 ) {
-		it = std::stable_partition(mokiniai.begin(), mokiniai.end(), arGavoSkolaVid);
+		it = std::stable_partition(mokiniai.begin(), mokiniai.end(), arKietVid);
 	} else if (kriterijus == 2) {
-		it = std::stable_partition(mokiniai.begin(), mokiniai.end(), arGavoSkolaMed);
+		it = std::stable_partition(mokiniai.begin(), mokiniai.end(), arKietMed);
 	}
 
 	vector<mokinys> varg(it, mokiniai.end());
@@ -377,7 +371,14 @@ void skaiciuotiRezultatus() {
 				vardPavKrit = int_ivestis();
 			}
 			rikiuotiMokinius(mokiniai, vardPavKrit);
-			vector<mokinys> vargs = atskirtiVarg(mokiniai, vardPavKrit);
+
+			cout << "Pagal ka norite skaiciuoti rezultatus?\n1. Vidurki\n2. Mediana\n: ";
+			int rezKrit = int_ivestis();
+			while (rezKrit != 1 && rezKrit != 2) {
+				cout << "Negalima reiksme. Iveskite reiksme is naujo: ";
+				rezKrit = int_ivestis();
+			}
+			vector<mokinys> vargs = atskirtiVarg(mokiniai, rezKrit);
 			cout << "Pasirinkite rezultatu isvedimo buda:\n1. Isvedimas konsoles lange (v0.2)\n2. Isvedimas i atskirus failus (v0.4)\n: ";
 			int isvedKrit = int_ivestis(); //Rezultatų išvedimo kriterijus. Galimi variantai : 1-2
 			while (isvedKrit != 1 && isvedKrit != 2) {
@@ -388,7 +389,7 @@ void skaiciuotiRezultatus() {
 				spausdintiMokinius(mokiniai, maxVardIlgis, maxPavardIlgis, vardPavKrit);
 
 			} else if (isvedKrit == 2) {
-				isvestiMokinius(vargs, mokiniai, maxVardIlgis, maxPavardIlgis, vardPavKrit);
+				isvestiMokinius(vargs, mokiniai, maxVardIlgis, maxPavardIlgis, vardPavKrit, rezKrit);
 			} else {
 				//Nenumatyta klaida
 				cout << "Nenumatyta klaida.\n";

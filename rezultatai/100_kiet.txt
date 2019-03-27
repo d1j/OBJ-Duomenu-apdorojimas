@@ -3,7 +3,6 @@ Vardas         Pavarde         Galutinis (Vid.)  Galutinis (Med.)
 Vardas1008710  Pavarde1512248  5.74              6.20              
 Vardas1135709  Pavarde950335   5.36              5.40              
 Vardas1278255  Pavarde3873235  5.30              5.20              
-Vardas1331572  Pavarde3092164  5.13              4.80              
 Vardas1537773  Pavarde8795991  5.60              5.60              
 Vardas1861331  Pavarde1958411  7.00              7.00              
 Vardas2148136  Pavarde8724756  7.68              7.40              
