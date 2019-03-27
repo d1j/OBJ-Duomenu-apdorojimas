@@ -29,9 +29,11 @@ using namespace std::chrono;
 void spausdintiMokinius(vector<mokinys> &mokiniai, int maxVardIlgis, int maxPavardIlgis, int pasirink) {
 	if (pasirink == 1) {
 		cout << std::left << setw(maxVardIlgis + 2) << "Vardas" << setw(maxPavardIlgis + 2) << "Pavarde";
-	} else if (pasirink == 2) {
+	}
+	else if (pasirink == 2) {
 		cout << std::left << setw(maxPavardIlgis + 2) << "Pavarde" << setw(maxVardIlgis + 2) << "Vardas";
-	} else {
+	}
+	else {
 		//Nenumatyta klaida
 		cout << "Nenumatyta klaida.\n";
 	}
@@ -123,7 +125,8 @@ void ivestiMokinius(vector<mokinys> &mokiniai, int rezimas, int &maxVardIlgis, i
 				try {
 					esamas.skaiciuotiVidurki();
 					esamas.skaiciuotiMediana();
-				} catch (std::exception& e) {
+				}
+				catch (std::exception& e) {
 					cout << "Nepavyko apskaiciuoti mokinio vidurkio/medianos: " << e.what() << endl;
 				}
 				mokiniai.push_back(esamas);
@@ -134,14 +137,14 @@ void ivestiMokinius(vector<mokinys> &mokiniai, int rezimas, int &maxVardIlgis, i
 }
 
 //Funkcija atlieka v0.4 užduotį ir sudaro du mokinių sąrašus atskiruose failuose "./rezultatai" aplanke
-void isvestiMokinius(vector<mokinys> &varg, vector<mokinys> &kiet, int maxVardIlgis, int maxPavardIlgis, int vardPavKrit) {
+void isvestiMokinius(vector<mokinys> &varg, vector<mokinys> &kiet, int maxVardIlgis, int maxPavardIlgis, int vardPavKrit, int rezKrit) {
 	bool pavPower = true;
 	std::string pavad;
 	while (pavPower) {
 		cout << "Iveskite tinkama rezultatu failo pavadinima (failo formato vesti nereikia. Programa automatiskai sukuria .txt formato rezultatu failus): ";
 		cin >> pavad;
 		if (ar_failas_egzistuoja("./rezultatai/" + pavad + "_kiet.txt") ||
-		        ar_failas_egzistuoja("./rezultatai/" + pavad + "_varg.txt")) {
+			ar_failas_egzistuoja("./rezultatai/" + pavad + "_varg.txt")) {
 			//Failas jau egzistuoja
 			int perrPasKrit; //perrašymo pasirinkimo kriterijus. Galimos reikšmės: 1-2
 			cout << "Failai nurodytu pavadinimu jau sukurti, ar norite perrasyti siuos failus?\n1.Taip\n2.Ne\n: ";
@@ -153,31 +156,29 @@ void isvestiMokinius(vector<mokinys> &varg, vector<mokinys> &kiet, int maxVardIl
 			if (perrPasKrit == 1) {
 				cout << "Failai pavadinimu " << pavad + "_kiet.txt ir " + pavad + "_varg.txt bus perrasyti.\n";
 				pavPower = false;
-			} else {
+			}
+			else {
 				cout << "Failai pavadinimu " << pavad + "_kiet.txt ir " + pavad + "_varg.txt nebus perrasyti.\n";
 			}
-		} else {
+		}
+		else {
 			//Failas neegzistuoja, galima kurti nauja faila
 			pavPower = false;
 		}
 	}
-	cout << "Pagal ka norite skaiciuoti rezultatus?\n1. Vidurki\n2. Mediana\n: ";
-	int rezKrit = int_ivestis();
-	while (rezKrit != 1 && rezKrit != 2) {
-		cout << "Negalima reiksme. Iveskite reiksme is naujo: ";
-		rezKrit = int_ivestis();
-	}
 
 	auto start = high_resolution_clock::now();
 	std::ofstream kietOut("./rezultatai/" + pavad + "_kiet.txt"),
-	    vargOut("./rezultatai/" + pavad + "_varg.txt");
+		vargOut("./rezultatai/" + pavad + "_varg.txt");
 	if (vardPavKrit == 1) {
 		kietOut << std::left << setw(maxVardIlgis + 2) << "Vardas" << setw(maxPavardIlgis + 2) << "Pavarde";
 		vargOut << std::left << setw(maxVardIlgis + 2) << "Vardas" << setw(maxPavardIlgis + 2) << "Pavarde";
-	} else if (vardPavKrit == 2) {
+	}
+	else if (vardPavKrit == 2) {
 		kietOut << std::left << setw(maxPavardIlgis + 2) << "Pavarde" << setw(maxVardIlgis + 2) << "Vardas";
 		vargOut << std::left << setw(maxPavardIlgis + 2) << "Pavarde" << setw(maxVardIlgis + 2) << "Vardas";
-	} else {
+	}
+	else {
 		//Nenumatyta klaida
 		cout << "Nenumatyta klaida.\n";
 		cout << "Nenumatyta klaida.\n";
@@ -220,7 +221,7 @@ void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPava
 			eilute++;
 			int pap;
 			input >> esamas.vardas
-			      >> esamas.pavarde;
+				>> esamas.pavarde;
 			if (esamas.vardas == "" || esamas.pavarde == "") continue;
 			if (esamas.vardas.size() > maxVardIlgis) maxVardIlgis = esamas.vardas.size();
 			if (esamas.pavarde.size() > maxPavardIlgis) maxPavardIlgis = esamas.pavarde.size();
@@ -229,7 +230,7 @@ void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPava
 				if (input.fail()) {
 					throw std::runtime_error("Nepavyko nuskaityti duomenu, patikrinkite, ar gerai ivedete duomenis. Klaida " + std::to_string(eilute) + "-oje eiluteje.");
 				}
-				if (pap < 1  || pap > 10) {
+				if (pap < 1 || pap > 10) {
 					throw std::runtime_error("Nepavyko nuskaityti duomenu, patikrinkite, ar gerai ivedete duomenis. Klaida " + std::to_string(eilute) + "-oje eiluteje.");
 				}
 				esamas.pazym.push_back(pap);
@@ -239,10 +240,12 @@ void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPava
 			}
 			esamas.egz = esamas.pazym.back();
 			esamas.pazym.pop_back();
+			esamas.pazym.shrink_to_fit();
 			try {
 				esamas.skaiciuotiVidurki();
 				esamas.skaiciuotiMediana();
-			} catch (std::exception& e) {
+			}
+			catch (std::exception& e) {
 				cout << "Nepavyko apskaiciuoti mokinio vidurkio/medianos: " << e.what() << endl;
 			}
 			mokiniai.push_back(esamas);
@@ -251,7 +254,8 @@ void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPava
 		auto end = high_resolution_clock::now();
 		duration<double> diff = end - start;
 		cout << "\nFailas nuskaitytas per: \a" << diff.count() << "s.\n";
-	} catch (std::exception& e) {
+	}
+	catch (std::exception& e) {
 		cout << "Ivyko klaida. " << e.what() << endl;
 		throw; //Erroras permetamas į funkciją kvietėją. Šiuo atvėju "skaiciuotiRezultatus()" funkciją.
 		//Ten bus sugautas tas pats erroras ir nebus vykdoma sekanti dalis kodo, einanti po įvykusios klaidos.
@@ -259,12 +263,12 @@ void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPava
 }
 
 bool arGavoSkolaVid(mokinys &a) {
-	if ((a.vidurkis * 0.4 + a.egz * 0.6) < 5.0 ) {
+	if ((a.vidurkis * 0.4 + a.egz * 0.6) < 5.0) {
 		return true;
 	} return false;
 }
 bool arGavoSkolaMed(mokinys &a) {
-	if ((a.mediana * 0.4 + a.egz * 0.6) < 5.0 ) {
+	if ((a.mediana * 0.4 + a.egz * 0.6) < 5.0) {
 		return true;
 	} return false;
 }
@@ -273,24 +277,27 @@ vector<mokinys> atskirtiVarg(vector<mokinys> &mokiniai, int kriterijus) {
 	auto start = high_resolution_clock::now();
 	auto it = mokiniai.begin();
 	while (it != mokiniai.end()) {
-		if (kriterijus == 1 ) {
+		if (kriterijus == 1) {
 			if ((it->vidurkis * 0.4 + it->egz * 0.6) < 5.0 && !arDoubleLygus(it->vidurkis * 0.4 + it->egz * 0.6, 5.0)) {
 				varg.push_back(*it);
 			}
 			it++;
-		} else if (kriterijus == 2 ) {
+		}
+		else if (kriterijus == 2) {
 			if ((it->mediana * 0.4 + it->egz * 0.6) < 5.0 && !arDoubleLygus(it->mediana * 0.4 + it->egz * 0.6, 5.0)) {
 				varg.push_back(*it);
 			}
 			it++;
-		} else {
+		}
+		else {
 			break;
 		}
 	}
 
-	if (kriterijus == 1 ) {
+	if (kriterijus == 1) {
 		it = std::remove_if(mokiniai.begin(), mokiniai.end(), arGavoSkolaVid);
-	} else if (kriterijus == 2) {
+	}
+	else if (kriterijus == 2) {
 		it = std::remove_if(mokiniai.begin(), mokiniai.end(), arGavoSkolaMed);
 	}
 
@@ -313,7 +320,8 @@ bool rikVard(mokinys& i, mokinys& j) {
 			return true;
 		else
 			return false;
-	} else {
+	}
+	else {
 		return false;
 	}
 }
@@ -327,7 +335,8 @@ bool rikPavard(mokinys& i, mokinys& j) {
 			return true;
 		else
 			return false;
-	} else {
+	}
+	else {
 		return false;
 	}
 
@@ -392,7 +401,13 @@ void skaiciuotiRezultatus() {
 				vardPavKrit = int_ivestis();
 			}
 			rikiuotiMokinius(mokiniai, vardPavKrit);
-			vector<mokinys> vargs = atskirtiVarg(mokiniai, vardPavKrit);
+			cout << "Pagal ka norite skaiciuoti rezultatus?\n1. Vidurki\n2. Mediana\n: ";
+			int rezKrit = int_ivestis();
+			while (rezKrit != 1 && rezKrit != 2) {
+				cout << "Negalima reiksme. Iveskite reiksme is naujo: ";
+				rezKrit = int_ivestis();
+			}
+			vector<mokinys> vargs = atskirtiVarg(mokiniai, rezKrit);
 			cout << "Pasirinkite rezultatu isvedimo buda:\n1. Isvedimas konsoles lange (v0.2)\n2. Isvedimas i atskirus failus (v0.4)\n: ";
 			int isvedKrit = int_ivestis(); //Rezultatų išvedimo kriterijus. Galimi variantai : 1-2
 			while (isvedKrit != 1 && isvedKrit != 2) {
@@ -402,14 +417,17 @@ void skaiciuotiRezultatus() {
 			if (isvedKrit == 1) {
 				spausdintiMokinius(mokiniai, maxVardIlgis, maxPavardIlgis, vardPavKrit);
 
-			} else if (isvedKrit == 2) {
-				isvestiMokinius(vargs, mokiniai, maxVardIlgis, maxPavardIlgis, vardPavKrit);
-			} else {
+			}
+			else if (isvedKrit == 2) {
+				isvestiMokinius(vargs, mokiniai, maxVardIlgis, maxPavardIlgis, vardPavKrit, rezKrit);
+			}
+			else {
 				//Nenumatyta klaida
 				cout << "Nenumatyta klaida.\n";
 			}
 		}
-	} catch (std::exception& e) {
+	}
+	catch (std::exception& e) {
 		//Kodėl šitas catch blokas tuščias, galbūt paaiškės paskaičius komentarus "skaitytiMokinius" funkcijoje
 	}
 }

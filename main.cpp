@@ -5,18 +5,22 @@
 #include "generavimas.h"
 #include "funkcijos.h"
 
-int main() {
+int main()
+{
 	bool power = true;
 	int pasirink = -1;
-	while (power) {
+	while (power)
+	{
 		std::cout << "\n--Mokiniu rezultatu skaiciavimo programa--" << std::endl
-		          << "Pasirinkite ka norite daryti:\n1. Skaiciuoti mokiniu rezultatus\n2. Generuoti duomenis\n3. Iseiti\n: ";
+				  << "Pasirinkite ka norite daryti:\n1. Skaiciuoti mokiniu rezultatus\n2. Generuoti duomenis\n3. Iseiti\n: ";
 		pasirink = int_ivestis();
-		while (pasirink < 1 || pasirink > 3) {
+		while (pasirink < 1 || pasirink > 3)
+		{
 			std::cout << "Blogas pasirinkimas, iveskite pasirinkima is naujo: ";
 			pasirink = int_ivestis();
 		}
-		switch (pasirink) {
+		switch (pasirink)
+		{
 		case 1:
 			skaiciuotiRezultatus();
 			break;

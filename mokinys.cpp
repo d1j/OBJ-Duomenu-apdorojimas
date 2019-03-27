@@ -66,7 +66,6 @@ void mokinys::skaiciuotiMediana() {
 	}
 	else {
 		//Lyginis skaičius pažymiu
-		mediana = 1.0 *  pazym[sk / 2 - 1] + pazym[sk / 2] / 2;
+		mediana = 1.0 * (pazym[sk / 2 - 1] + pazym[sk / 2]) / 2;
 	}
-
 }
