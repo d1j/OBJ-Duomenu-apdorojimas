@@ -188,7 +188,7 @@ void isvestiMokinius(vector<mokinys> &varg, vector<mokinys> &kiet, int maxVardIl
 	kietOut << linija << "----------------------------------\n";
 	vargOut << linija << "----------------------------------\n";
 	auto it = varg.begin();
-	while (it != varg. end()) {
+	while (it != varg.end()) {
 		it->isvestiInfo(vargOut, maxVardIlgis, maxPavardIlgis, vardPavKrit);
 		it++;
 	}
@@ -237,7 +237,7 @@ void skaitytiMokinius(vector<mokinys> &mokiniai, int &maxVardIlgis, int &maxPava
 			if (esamas.pazym.size() < 2) {
 				throw std::logic_error("Mokinys turi tik viena pazymi, negalima nustatyti ar tai namu darbo pazymys ar egzamino pazymys. Klaida " + std::to_string(eilute) + "-oje eiluteje.");
 			}
-			esamas.egz = esamas.egz = esamas.pazym[esamas.pazym.size() - 1];
+			esamas.egz = esamas.pazym.back();
 			esamas.pazym.pop_back();
 			try {
 				esamas.skaiciuotiVidurki();
@@ -279,7 +279,7 @@ vector<mokinys> atskirtiVarg(vector<mokinys> &mokiniai, int kriterijus) {
 			}
 			it++;
 		} else if (kriterijus == 2 ) {
-			if ((it->mediana * 0.4 + it->egz * 0.6) < 5.0 && !arDoubleLygus(it->vidurkis * 0.4 + it->egz * 0.6, 5.0)) {
+			if ((it->mediana * 0.4 + it->egz * 0.6) < 5.0 && !arDoubleLygus(it->mediana * 0.4 + it->egz * 0.6, 5.0)) {
 				varg.push_back(*it);
 			}
 			it++;
